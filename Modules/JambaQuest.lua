@@ -1622,7 +1622,7 @@ function AJM:QUEST_DETAIL()
 				else 	
 					AJM.isInternalCommand = true
 					--AJM:DebugMessage( "QUEST_DETAIL - auto accept is: ", QuestGetAutoAccept() )
-					AJM:JambaSendMessageToTeam( AJM.db.messageArea, LL["AUTOMATICALLY_ACCEPTED_QUEST"]( GetTitleText() ), false )
+					AJM:JambaSendMessageToTeam( AJM.db.messageArea, L["AUTOMATICALLY_ACCEPTED_QUEST"]( GetTitleText() ), false )
 					AcceptQuest()
 					HideUIPanel( QuestFrame )
 					AJM.isInternalCommand = false
