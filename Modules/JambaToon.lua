@@ -56,6 +56,9 @@ AJM.settings = {
 		warnWhenManaDropsBelowX = true,
 		warnWhenManaDropsAmount = "30",
 		warnManaDropsMessage = L["LOW_MANA"],
+		warnWhenDurabilityDropsBelowX = true,
+		warnWhenDurabilityDropsAmount = "20",
+		warnDurabilityDropsMessage = L["DURABILITY_LOW_MSG"],		
 		warnBagsFull = true,
 		bagsFullMessage = L["BAGS_FULL"],	
 		warnCC = true,
@@ -124,7 +127,6 @@ AJM.COMMAND_LOOT_ROLL = "JamabaLootRoll"
 -------------------------------------------------------------------------------------------------------------
 
 AJM.sharedInvData = {}
-
 
 -------------------------------------------------------------------------------------------------------------
 -- Settings Dialogs.
@@ -449,8 +451,53 @@ local function SettingsCreateWarnings( top )
 	)	
 	AJM.settingsControlWarnings.editBoxWarnManaDropsMessage:SetCallback( "OnEnterPressed", AJM.EditBoxChangedWarnManaDropsMessage )
 	movingTop = movingTop - editBoxHeight
-	JambaHelperSettings:CreateHeading( AJM.settingsControlWarnings, L["BAG_SPACE"], movingTop, true )
-	movingTop = movingTop - headingHeight
+	JambaHelperSettings:CreateHeading( AJM.settingsControlWarnings, L["OTHER"], movingTop, true )
+	movingTop = movingTop - headingHeight	
+	AJM.settingsControlWarnings.checkBoxWarnWhenDurabilityDropsBelowX = JambaHelperSettings:CreateCheckBox( 
+		AJM.settingsControlWarnings, 
+		headingWidth, 
+		left, 
+		movingTop, 
+		L["DURABILITY_DROPS_BELOW"],
+		AJM.SettingsToggleWarnWhenDurabilityDropsBelowX,
+		L["DURABILITY_DROPS_BELOW_HELP"]
+	)	
+	movingTop = movingTop - checkBoxHeight
+	AJM.settingsControlWarnings.editBoxWarnWhenDurabilityDropsAmount = JambaHelperSettings:CreateEditBox( AJM.settingsControlWarnings,
+		headingWidth,
+		left,
+		movingTop,
+		L["DURABILITY_PERCENTAGE"]
+	)	
+	AJM.settingsControlWarnings.editBoxWarnWhenDurabilityDropsAmount:SetCallback( "OnEnterPressed", AJM.EditBoxChangedWarnWhenDurabilityDropsAmount )
+	movingTop = movingTop - editBoxHeight
+	AJM.settingsControlWarnings.editBoxWarnDurabilityDropsMessage = JambaHelperSettings:CreateEditBox( AJM.settingsControlWarnings,
+		headingWidth,
+		left,
+		movingTop,
+		L["LOW_DURABILITY_TEXT"]
+	)	
+	AJM.settingsControlWarnings.editBoxWarnHealthDropsMessage:SetCallback( "OnEnterPressed", AJM.EditBoxChangedWarnDurabilityDropsMessage )	
+	movingTop = movingTop - editBoxHeight
+	AJM.settingsControlWarnings.checkBoxWarnCC = JambaHelperSettings:CreateCheckBox( 
+		AJM.settingsControlWarnings, 
+		headingWidth, 
+		left, 
+		movingTop, 
+		L["WARN_IF_CC"],
+		AJM.SettingsToggleWarnCC,
+		L["WARN_IF_CC_HELP"]
+	)	
+	movingTop = movingTop - checkBoxHeight
+	AJM.settingsControlWarnings.editBoxCCMessage = JambaHelperSettings:CreateEditBox( AJM.settingsControlWarnings,
+		headingWidth,
+		left,
+		movingTop,
+		L["CCED"]
+	)
+	AJM.settingsControlWarnings.editBoxCCMessage:SetCallback( "OnEnterPressed", AJM.EditBoxChangedCCMessage )
+	
+	movingTop = movingTop - editBoxHeight
     AJM.settingsControlWarnings.checkBoxWarnBagsFull = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControlWarnings, 
 		headingWidth, 
@@ -469,25 +516,8 @@ local function SettingsCreateWarnings( top )
 	)	
 	AJM.settingsControlWarnings.editBoxBagsFullMessage:SetCallback( "OnEnterPressed", AJM.EditBoxChangedBagsFullMessage )
 	movingTop = movingTop - editBoxHeight
-	JambaHelperSettings:CreateHeading( AJM.settingsControlWarnings, L["OTHER"], movingTop, true )
-	movingTop = movingTop - headingHeight
-	AJM.settingsControlWarnings.checkBoxWarnCC = JambaHelperSettings:CreateCheckBox( 
-		AJM.settingsControlWarnings, 
-		headingWidth, 
-		left, 
-		movingTop, 
-		L["WARN_IF_CC"],
-		AJM.SettingsToggleWarnCC,
-		L["WARN_IF_CC_HELP"]
-	)	
-	movingTop = movingTop - checkBoxHeight
-	AJM.settingsControlWarnings.editBoxCCMessage = JambaHelperSettings:CreateEditBox( AJM.settingsControlWarnings,
-		headingWidth,
-		left,
-		movingTop,
-		L["CCED"]
-	)
-	AJM.settingsControlWarnings.editBoxCCMessage:SetCallback( "OnEnterPressed", AJM.EditBoxChangedCCMessage )
+	
+	
 	movingTop = movingTop - editBoxHeight	
 	AJM.settingsControlWarnings.dropdownWarningArea = JambaHelperSettings:CreateDropdown( 
 		AJM.settingsControlWarnings, 
@@ -562,7 +592,10 @@ function AJM:SettingsRefresh()
 	AJM.settingsControlWarnings.editBoxWarnHealthDropsMessage:SetText( AJM.db.warnHealthDropsMessage )
 	AJM.settingsControlWarnings.checkBoxWarnWhenManaDropsBelowX:SetValue( AJM.db.warnWhenManaDropsBelowX )
 	AJM.settingsControlWarnings.editBoxWarnWhenManaDropsAmount:SetText( AJM.db.warnWhenManaDropsAmount )
-	AJM.settingsControlWarnings.editBoxWarnManaDropsMessage:SetText( AJM.db.warnManaDropsMessage )
+	AJM.settingsControlWarnings.editBoxWarnManaDropsMessage:SetText( AJM.db.warnManaDropsMessage )		
+	AJM.settingsControlWarnings.checkBoxWarnWhenDurabilityDropsBelowX:SetValue( AJM.db.warnWhenDurabilityDropsBelowX )
+	AJM.settingsControlWarnings.editBoxWarnWhenDurabilityDropsAmount:SetText( AJM.db.warnWhenDurabilityDropsAmount )
+	AJM.settingsControlWarnings.editBoxWarnDurabilityDropsMessage:SetText( AJM.db.warnDurabilityDropsMessage )	
 	AJM.settingsControlWarnings.checkBoxWarnBagsFull:SetValue( AJM.db.warnBagsFull )
 	AJM.settingsControlWarnings.editBoxBagsFullMessage:SetText( AJM.db.bagsFullMessage )
 	AJM.settingsControlWarnings.checkBoxWarnCC:SetValue( AJM.db.warnCC )
@@ -589,6 +622,8 @@ function AJM:SettingsRefresh()
 	AJM.settingsControlWarnings.editBoxWarnHealthDropsMessage:SetDisabled( not AJM.db.warnWhenHealthDropsBelowX )
 	AJM.settingsControlWarnings.editBoxWarnWhenManaDropsAmount:SetDisabled( not AJM.db.warnWhenManaDropsBelowX )
 	AJM.settingsControlWarnings.editBoxWarnManaDropsMessage:SetDisabled( not AJM.db.warnWhenManaDropsBelowX )
+	AJM.settingsControlWarnings.editBoxWarnWhenDurabilityDropsAmount:SetDisabled( not AJM.db.warnWhenDurabilityDropsBelowX )
+	AJM.settingsControlWarnings.editBoxWarnDurabilityDropsMessage:SetDisabled( not AJM.db.warnWhenDurabilityDropsBelowX )		
 	AJM.settingsControlMerchant.checkBoxAutoRepairUseGuildFunds:SetDisabled( not AJM.db.autoRepair )
 	AJM.settingsControlWarnings.editBoxBagsFullMessage:SetDisabled( not AJM.db.warnBagsFull )
 	AJM.settingsControlWarnings.editBoxCCMessage:SetDisabled( not AJM.db.warnCC )
@@ -740,6 +775,23 @@ function AJM:EditBoxChangedWarnManaDropsMessage( event, text )
 	AJM:SettingsRefresh()
 end
 
+function AJM:SettingsToggleWarnWhenDurabilityDropsBelowX( event, checked )
+	AJM.db.warnWhenDurabilityDropsBelowX = checked
+	AJM:SettingsRefresh()
+end
+
+function AJM:EditBoxChangedWarnWhenDurabilityDropsAmount( event, text )
+	local amount = tonumber( text )
+	amount = JambaUtilities:FixValueToRange( amount, 0, 100 )
+	AJM.db.warnWhenDurabilityDropsAmount = tostring( amount )
+	AJM:SettingsRefresh()
+end
+
+function AJM:EditBoxChangedWarnDurabilityDropsMessage( event, text )
+	AJM.db.warnDurabilityDropsMessage = text
+	AJM:SettingsRefresh()
+end
+
 function AJM:SettingsSetWarningArea( event, value )
 	AJM.db.warningArea = value
 	AJM:SettingsRefresh()
@@ -771,6 +823,8 @@ function AJM:OnInitialize()
 	AJM.toldMasterAboutHealth = false
 	-- Flag set when told the master about mana falling below a certain percentage.
 	AJM.toldMasterAboutMana = false
+	-- Flag Set when told master About Durability
+	AJM.toldMasterAboutDurability = false
 	-- Have been hit flag.
 	AJM.haveBeenHit = false
 	-- Bags full changed count.
@@ -785,8 +839,9 @@ function AJM:OnEnable()
 	AJM:RegisterEvent( "PLAYER_REGEN_DISABLED" )
 	AJM:RegisterEvent( "PLAYER_REGEN_ENABLED" )
 	AJM:RegisterEvent( "UNIT_HEALTH" )
+	AJM:RegisterEvent( "UPDATE_INVENTORY_DURABILITY" )
+	AJM:RegisterEvent( "UNIT_POWER_FREQUENT" )	
 	AJM:RegisterEvent( "MERCHANT_SHOW" )
-	AJM:RegisterEvent( "UNIT_POWER_FREQUENT" )
 	AJM:RegisterEvent( "RESURRECT_REQUEST" )
 	AJM:RegisterEvent( "PLAYER_DEAD" )
 	AJM:RegisterEvent( "CORPSE_IN_RANGE" )
@@ -801,7 +856,8 @@ function AJM:OnEnable()
 	AJM:RegisterEvent( "READY_CHECK" )
 	AJM:RegisterEvent("LOSS_OF_CONTROL_ADDED")
 	AJM:RegisterEvent( "UI_ERROR_MESSAGE", "BAGS_FULL" )
-	AJM:RegisterEvent(  "BAG_UPDATE_DELAYED" )
+	AJM:RegisterEvent( "BAG_UPDATE_DELAYED" )
+
 	AJM:RegisterMessage( JambaApi.MESSAGE_MESSAGE_AREAS_CHANGED, "OnMessageAreasChanged" )
 	AJM:RegisterMessage( JambaApi.MESSAGE_CHARACTER_ONLINE, "OnCharactersChanged" )
 	AJM:RegisterMessage( JambaApi.MESSAGE_CHARACTER_OFFLINE, "OnCharactersChanged" )
@@ -832,6 +888,9 @@ function AJM:JambaOnSettingsReceived( characterName, settings )
 		AJM.db.warnWhenManaDropsBelowX = settings.warnWhenManaDropsBelowX
 		AJM.db.warnWhenManaDropsAmount = settings.warnWhenManaDropsAmount
 		AJM.db.warnManaDropsMessage = settings.warnManaDropsMessage
+		AJM.db.warnWhenDurabilityDropsBelowX = settings.warnWhenDurabilityDropsBelowX
+		AJM.db.warnWhenDurabilityDropsAmount = settings.warnWhenDurabilityDropsAmount
+		AJM.db.warnDurabilityDropsMessage = settings.warnDurabilityDropsMessage		
 		AJM.db.warnBagsFull = settings.warnBagsFull
 		AJM.db.bagsFullMessage = settings.bagsFullMessage
 		AJM.db.warnCC = settings.warnCC
@@ -905,7 +964,6 @@ function AJM:PLAYER_ALIVE(event, ...)
 		StaticPopup_Hide( "TEAMDEATH" )
 end
 
-
 function AJM:CORPSE_IN_RANGE(event, ...)
 	local teamMembers = JambaApi.GetTeamListMaximumOrderOnline()
 	if teamMembers > 1 and AJM.db.acceptDeathRequests == true then
@@ -961,9 +1019,11 @@ StaticPopupDialogs["TEAMDEATH"] = {
 		self.button1:SetText(L["RELEASE_TEAM"])
 	end,
 	OnAccept = function(self)
-		if not ( CannotBeResurrected() ) then
-			return 1
-		end
+		AJM:Print("testRes")
+		-- Do we need this???
+		--if not ( CannotBeResurrected() ) then
+		--	return 1
+		--end
 		
 		AJM.teamDeath()
 	end,
@@ -1126,7 +1186,6 @@ function AJM:READY_CHECK( event, name, ... )
 		end	
 	end	
 end
-
 
 function AJM:ConfirmReadyCheck( ready )
 	--AJM:Print("Test", ready )
@@ -1302,6 +1361,37 @@ function AJM:UNIT_HEALTH( event, unitAffected, ... )
 		if currentHealth < tonumber( AJM.db.warnWhenHealthDropsAmount ) then
 			AJM.toldMasterAboutHealth = true
 			AJM:JambaSendMessageToTeam( AJM.db.warningArea, AJM.db.warnHealthDropsMessage, false )
+		end
+	end
+end
+
+function AJM:UPDATE_INVENTORY_DURABILITY(event, agr1)
+	if AJM.db.warnWhenDurabilityDropsBelowX == false then
+		return
+	end
+	--AJM:Print("Test Durability Fired")
+	local curTotal, maxTotal, broken = 0, 0, 0
+	for i = 1, 18 do
+		local curItemDurability, maxItemDurability = GetInventoryItemDurability(i)
+		if curItemDurability and maxItemDurability then
+			curTotal = curTotal + curItemDurability
+			maxTotal = maxTotal + maxItemDurability
+			if maxItemDurability > 0 and curItemDurability == 0 then
+				broken = broken + 1
+			end
+		end
+	end
+	local durability = (curTotal / maxTotal) * 100
+	local durabilityText = tostring(gsub( durability, "%.[^|]+", "") )
+	--AJM:Print("Test Durability", durabilityText,"%")
+	if AJM.toldMasterAboutDurability == true then
+		if durability >= tonumber( AJM.db.warnWhenDurabilityDropsAmount ) then
+			AJM.toldMasterAboutDurability = false
+		end
+	else
+		if durability < tonumber( AJM.db.warnWhenDurabilityDropsAmount ) then
+			AJM.toldMasterAboutDurability = true
+			AJM:JambaSendMessageToTeam( AJM.db.warningArea, AJM.db.warnDurabilityDropsMessage..L[" "]..durabilityText..L["%"], false )
 		end
 	end
 end

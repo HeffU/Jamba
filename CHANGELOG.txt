@@ -30,7 +30,7 @@ Release Date: TBA
 	- New Logo'a now Shows on GUI
 
 #API
-	Tons of JambaApi Changes Shows at the bottom of the pages.
+	Tons of JambaApi Changes.
 
 ### Modules changed 	
 	- Removed Taxi And Mount Modules
@@ -56,9 +56,12 @@ Release Date: TBA
 
 ## Guild
 	New Module:
-	Support Adding Items In The GuildBank, By BankTab & Group!
+		-Support Adding Items In The GuildBank, By BankTab & Groups!
 		
 ## Toon
+	- Warnings	
+		-- Added Support To Tell Your Master If Your Durability Drops Below A Certain Percent
+		-- Fixed When You Run Out Of Space In Your Bags.
 
 ## ItemUse
 	-- Now Count Items In Teams Bags And Displays On The Item Tooltip's.
