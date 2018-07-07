@@ -41,6 +41,10 @@ Release Date: TBA
 ## Quest
 	- Tell "Team" If The A Character Has A Full Inventory When Handing In The A Quest With A Item
 
+## Quest-Watcher
+	- ProgressBar Quests Now Only Show's A Single Real Percent And Average Team Percent	
+	- Scenario Should always be at the top of the Quest-Tracker 	
+	
 ## Interaction 	
 	New Module:
 	- Added Taxi Support
