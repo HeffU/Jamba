@@ -426,7 +426,7 @@ L["CURR_STARTUP_HELP"] = "Open Currency List On Start Up.\nThe Master Only)"
 L["LOCK_CURR_LIST"] = "Lock The Currency List Frame"
 L["LOCK_CURR_LIST_HELP"] = "Lock's The Currency List Frame And Enables Mouse Click-Through"
 L["SPACE_FOR_NAME"] = "Space For Name"
-L["SPACE_FOR_GOLD"] =  "Space For Name"
+L["SPACE_FOR_GOLD"] =  "Space For Gold"
 L["SPACE_FOR_POINTS"] = "Space For Points"
 L["SPACE_BETWEEN_VALUES"] = "Space Between Values"
 L["TOTAL"] = "Total"
@@ -818,6 +818,8 @@ L["LINES_TO_DISPLAY"] = "Lines Of Information To Display"
 L["TRACKER_WIDTH"] = "Tracker Width"
 L["DONE"] = "Done"
 L["TRACKER_TITLE_NAME"] = "Jamba Objectives Tracker"
+L["REWARDS"] = "Rewards"
+L["REWARDS_TEXT"] = "Completing This Quest Will \nReward You With:"
 
 ------------------------
 -- Guild Locale

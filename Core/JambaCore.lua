@@ -156,8 +156,8 @@ local function JambaModuleSelected( tree, event, treeValue, selected )
 			moduleFrame.frame:SetAllPoints() 
 			moduleFrame.frame:Show()	
 			JambaPrivate.SettingsFrame.Tree.CurrentChild = moduleFrame
-			if value == "Options" then
-				LibStub( "AceConfigDialog-3.0" ):Open( AJM.moduleName.."OPTIONS", moduleFrame )
+			if value == L["OPTIONS"] then
+				LibStub( "AceConfigDialog-3.0" ):Open( AJM.moduleName..L["OPTIONS"], moduleFrame )
 			end			
 			return
 		end
@@ -496,7 +496,7 @@ function AJM:OnInitialize()
 	]]
 	-- Create the settings profile support.
 	LibStub( "AceConfig-3.0" ):RegisterOptionsTable( 
-		AJM.moduleName.."OPTIONS",
+		AJM.moduleName..L["OPTIONS"],
 		LibStub( "AceDBOptions-3.0" ):GetOptionsTable( AJM.completeDatabase ) 
 	)
 	local profileContainerWidget = AceGUI:Create( "ScrollFrame" )
