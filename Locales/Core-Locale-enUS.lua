@@ -263,7 +263,7 @@ L["AREA"]  = "Area On Screen"
 L["SOUND_TO_PLAY"] = "Sound To Play"
 L["SAVE"] = "Save"
 L["STATICPOPUP_ADD_MSG"] = "Enter Name Of The Message Area To Add:"
-L['Are you sure you wish to remove "%s" from the message area list?'] = true
+L["REMOVE_MESSAGE_AREA"] = "Are You Sure You Wish To Remove \"%s\" From The Message Area List?"
 L["MESSAGE_AREA_LIST"] = "Message Area List"
 L["MESSAGE_AREA_CONFIGURATION"] = "Message Area Configuration"
 L["ERR_COULD_NOT_FIND_AREA"] = function( areaName )
@@ -282,7 +282,7 @@ L["REMOVE_FROM_GROUP"] = "Remove From Group"
 L["REMOVE_FROM_GROUP_HELP"] = "Remove Character From Group"
 L["WRONG_TEXT_INPUT_GROUP"] = "Needs To Be In <Character-realm> <Group> Format"
 L["NEW_GROUP_NAME"] = "Adds A New Group:"
-L["Are You Sure You Wish To Remove %s From The Tag List?"] = true
+L["REMOVE_FROM_TAG_LIST"] = "Are You Sure You Wish To Remove %s From The Group List?"
 --Note This need to be lowercase! 
 --If translated Make Sure you keep them as a the lowercase words or you Will breck Group/Tag
 --It be a headache i don't need -- Ebony

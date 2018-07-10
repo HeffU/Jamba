@@ -27,7 +27,7 @@ Release Date: TBA
 	- Every Module That Supported Tags Now Shows A Group DropDown list.
 	
 #GUI
-	- New Logo'a now Shows on GUI
+	- New Logo'a Now Shows on GUI
 
 #API
 	Tons of JambaApi Changes.
@@ -42,8 +42,13 @@ Release Date: TBA
 	- Tell "Team" If The A Character Has A Full Inventory When Handing In The A Quest With A Item
 
 ## Quest-Watcher
+	- Removed Map Icon
 	- ProgressBar Quests Now Only Show's A Single Real Percent And Average Team Percent	
-	- Scenario Should always be at the top of the Quest-Tracker 	
+	- Quests That Do Not Have A  "Objective As Such" Will Now So On The Jamba-Tracker
+	- Scenario Should always be at the top of the Quest-Tracker
+	- Shows Quest Items On The Jamba Tracker
+	- Shows Faction Icon On New Campaign Quests
+	- Added A ToolTip That Shows Quest Rewards 	
 	
 ## Interaction 	
 	New Module:

@@ -753,7 +753,7 @@ local function InitializePopupDialogs()
         end,		
     }
    StaticPopupDialogs["JAMBAMESSAGE_CONFIRM_REMOVE_AREA"] = {
-        text = L['Are you sure you wish to remove "%s" from the message area list?'],
+        text = L["REMOVE_MESSAGE_AREA"],
         button1 = YES,
         button2 = NO,
         timeout = 0,

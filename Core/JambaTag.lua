@@ -276,8 +276,8 @@ local function InitializePopupDialogs()
     }
    -- Confirm removing characters from member list.
    StaticPopupDialogs["JAMBATAG_CONFIRM_REMOVE_TAG"] = {
-        text = L["Are You Sure You Wish To Remove %s From The Tag List?"],
-        button1 = ACCEPT,
+        text = L["REMOVE_FROM_TAG_LIST"],
+		button1 = ACCEPT,
         button2 = CANCEL,
         timeout = 0,
 		whileDead = 1,

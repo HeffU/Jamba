@@ -283,7 +283,7 @@ function AJM:SettingsCreate()
 	)
 	JambaHelperSettings:CreateSettings( 
 		AJM.settingsControlCompletion, 
-		AJM.moduleDisplayName..L[": "]..L["COMPLETION"], 
+		L["COMPLETION"], 
 		AJM.parentDisplayName, 
 		AJM.SettingsPushSettingsClick,
 		AJM.moduleCompletionIcon,
@@ -484,7 +484,7 @@ function AJM:SettingsCreateQuestControl( top )
 		checkBoxThirdWidth, 
 		column1LeftIndent, 
 		movingTop,
-		L["GROUP"],
+		L["PARTY"],
 		AJM.SettingsToggleAcceptFromParty,
 		L["QUEST_GROUP_HELP"]
 		

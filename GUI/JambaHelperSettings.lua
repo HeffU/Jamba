@@ -579,7 +579,7 @@ function JambaHelperSettings:CreateScrollList( list )
 		local displayRow = CreateFrame( 
 			"Frame",
 			list.listFrame:GetName().."Row"..iterateDisplayRows, 
-			list.listFrame 
+			list.listFrame	
 		)
 		displayRow:SetWidth( rowWidth )
 		displayRow:SetHeight( list.rowHeight )
@@ -599,8 +599,13 @@ function JambaHelperSettings:CreateScrollList( list )
 			local displayColumn = CreateFrame(
 				"Button",
 				displayRow:GetName().."Column"..iterateDisplayColumns, 
-				displayRow
+				displayRow,
+				"SecureActionButtonTemplate"
 			)
+			if InCombatLockdown() == true then
+				return
+			end	
+			
 			displayColumn.rowNumber = iterateDisplayRows
 			displayColumn.columnNumber = iterateDisplayColumns
 			displayColumn.textString = displayRow:CreateFontString( 
@@ -613,20 +618,38 @@ function JambaHelperSettings:CreateScrollList( list )
 			displayColumn:SetPoint( "TOPLEFT", displayRow, "TOPLEFT", columnPosition, 0 )
 			displayColumn:SetWidth( columnWidth )
 			displayColumn:SetHeight( list.rowHeight )				
-			displayColumn:EnableMouse( true )
-			displayColumn:RegisterForClicks( "AnyUp" )	
-			displayColumn:SetScript( "OnClick", 
+			if InCombatLockdown() == false then
+				displayColumn:EnableMouse( true )
+				displayColumn:RegisterForClicks( "AnyUp" )	
+			end
+			displayColumn:SetScript( "PostClick", 
 				function( self, button )
 					if button == "LeftButton" then
 					list.rowClickCallback( self, displayColumn.rowNumber, displayColumn.columnNumber )
 					end
 					if button == "RightButton" then
-					list.rowRightClickCallback(	self, displayRow, displayColumn, displayColumn.rowNumber, displayColumn.columnNumber )
+						if list.rowRightClickCallback ~= nil then
+							list.rowRightClickCallback( self, displayColumn.rowNumber, displayColumn.columnNumber )
+						end
+					end
+				end 
+			)
+			displayColumn:SetScript("OnEnter",
+				function(self)
+					if list.rowMouseOverCallBack_OnEnter ~= nil then
+						list.rowMouseOverCallBack_OnEnter( displayColumn.rowNumber, displayColumn.columnNumber )
+					end
+				end 
+			)	
+			displayColumn:SetScript("OnLeave", 
+				function(self)
+					if list.rowMouseOverCallBack_OnLeave ~= nil then
+						list.rowMouseOverCallBack_OnLeave( displayColumn.rowNumber, displayColumn.columnNumber ) 
 					end
 				end 
 			)
 			displayColumn.textString:SetJustifyH( list.columnInformation[iterateDisplayColumns].alignment )
-			displayColumn.textString:SetAllPoints( displayColumn )		
+			displayColumn.textString:SetAllPoints( displayColumn )
 			displayRow.columns[iterateDisplayColumns] = displayColumn
 			columnPosition = columnPosition + columnWidth + columnSpacing
 		end
