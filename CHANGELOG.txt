@@ -2,8 +2,8 @@
 ChangeLogs:
 ---------------------------
 
-Jamba Version: v8.0-Alpha(0056)
-Game Version: 7.3.5/8.0.0
+Jamba Version: v8.0.1-Alpha(0064)
+Game Version: 7.3.5/8.0.1
 Release Date: TBA
 ---------------------------
 ## Core
@@ -15,8 +15,16 @@ Release Date: TBA
 	- Commands Lines Might Not Work Right.
 	- All Settings are Sorted Under A New DataBase And Have Reset!!!!
 	- All Locales system been merged into one File and is easyer to change!
-	- Updated As Much As I Can For 8.0.0
+	- Added deDE Locale thanks TK911
+	- Updated As Much As I Can For 8.0.1 (BFA)
 
+#GUI
+	- New Logo'a Now Shows on GUI
+
+#API
+	Tons of JambaApi Changes.	
+	
+	
 #Team
 	- Now Shows Groups On The TeamList.
 	- Updated Gui to be more User Frindly.
@@ -25,12 +33,7 @@ Release Date: TBA
 #Group (Tag)
 	- A full Rewrite of [Tag] Now named Group Use the Grouo List Page to add new groups/remove Groups that you can add to character's In The TeamGUI
 	- Every Module That Supported Tags Now Shows A Group DropDown list.
-	
-#GUI
-	- New Logo'a Now Shows on GUI
 
-#API
-	Tons of JambaApi Changes.
 
 ### Modules changed 	
 	- Removed Taxi And Mount Modules
@@ -48,8 +51,11 @@ Release Date: TBA
 	- Scenario Should always be at the top of the Quest-Tracker
 	- Shows Quest Items On The Jamba Tracker
 	- Shows Faction Icon On New Campaign Quests
-	- Added A ToolTip That Shows Quest Rewards 	
+	- Added A ToolTip That Shows Quest Rewards 
+	- Quest Objectives That have a Percent Tracker Now Tracks on Watcher
+	- Added A Right ClickDropDown Menu For Extra Options 
 	
+
 ## Interaction 	
 	New Module:
 	- Added Taxi Support
