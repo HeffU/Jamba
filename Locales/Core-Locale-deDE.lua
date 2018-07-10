@@ -114,7 +114,7 @@ L["REPAIR"] = "Reparieren"
 L["TALK"] = "Unterhaltungen"
 L["QUEST"] = "Quest" 
 L["COMPLETION"] = "Abschluss"
-L["TRACKER"] = "Quest: Anzeige"
+L["TRACKER"] = "Anzeige"
 
 --------------------------
 -- Pecoded String Formats
@@ -266,7 +266,7 @@ L["AREA"]  = "Region auf dem Bildschirm"
 L["SOUND_TO_PLAY"] = "Geräusch"
 L["SAVE"] = "Speichern"
 L["STATICPOPUP_ADD_MSG"] = "Name der hinzuzufügenden Region?"
-L['Are YOU sure you wish to remove "%s" from the message area list?'] = true
+L["REMOVE_MESSAGE_AREA"] = "Willst du \"%s\" aus der Liste entfernen?"
 L["MESSAGE_AREA_LIST"] = "Nachrichten Regions Liste"
 L["MESSAGE_AREA_CONFIGURATION"] = "Nachrichten Regions Konfigurierung"
 L["ERR_COULD_NOT_FIND_AREA"] = function( areaName )
@@ -285,7 +285,7 @@ L["REMOVE_FROM_GROUP"] = "Remove From Group"
 L["REMOVE_FROM_GROUP_HELP"] = "Remove Character From Group"
 L["WRONG_TEXT_INPUT_GROUP"] = "Needs To Be In <Character-realm> <Group> Format"
 L["NEW_GROUP_NAME"] = "Füge eine Neue Kategorie hinzu:"
-L["Are You Sure You Wish To Remove %s From The Tag List?"] = true
+L["REMOVE_FROM_TAG_LIST"] = "Willst du \"%s\" aus der Liste entfernen?"
 --Note This need to be lowercase! 
 --If translated Make Sure you keep them as a the lowercase words or you Will breck Group/Tag
 --It be a headache i don't need -- Ebony
@@ -624,13 +624,17 @@ L["HEALTH_PERCENTAGE"] = "Gesundheitswert - warnt bei weniger als ... Prozent"
 L["MANA_DROPS_BELOW"] = "Warnt wenn Mana unter den Wert fällt"
 L["MANA_DROPS_BELOW_HELP"] = "Warnt wenn das Mana eines Minions unter den Wert fäll"
 L["MANA_PERCENTAGE"] = "Manawert - warnt bei weniger als ... Prozent"
+L["DURABILITY_DROPS_BELOW"] = "Warnt wenn Haltbarkeit unter den Wert fällt"
+L["DURABILITY_DROPS_BELOW_HELP"] = "Warnt wenn die Haltbarkeit eines Minions unter den Wert fällt."
+L["DURABILITY_PERCENTAGE"] = "Haltbarkeit - warnt bei weniger als ... Prozent"
+L["LOW_DURABILITY_TEXT"] = "Niedrige Haltbarkeit Text"
+L["DURABILITY_LOW_MSG"] = "Meine Haltbarkeit fällt auf"
 L["BAGS_FULL"] = "Warnt wenn Taschen Voll sind"
 L["BAGS_FULL_HELP"] = "Warn wenn Taschen Voll sind"
 L["BAG_SPACE"] = "Taschen Platz"
 L["OTHER"] = "Andere"
 L["WARN_IF_CC"] = "Warnt wenn ein Team Mitglied unter den Einfluss von Kontrollversucheffekten fällt"
 L["WARN_IF_CC_HELP"] = "Warnt wenn ein Team Mitglied unter den Einfluss von Kontrollversucheffekten fällt"
-
 L["RELEASE_TEAM_Q"] = "Mit Team Geistfreilassen?"
 L["RELEASE_TEAM"] = "Team freilassen"
 L["RECOVER_CORPSES"] = "Team wiederbeleben?"
@@ -817,6 +821,8 @@ L["LINES_TO_DISPLAY"] = "Zeilen mit Informationen anzeigen"
 L["TRACKER_WIDTH"] = "Anzeige Breite"
 L["DONE"] = "Fertig"
 L["TRACKER_TITLE_NAME"] = "Jamba Quest Anzeige"
+L["REWARDS"] = "Belohnung"
+L["REWARDS_TEXT"] = "Abschluss dieder Quest gewährt \nEuch:"
 
 ------------------------
 -- Guild Locale
