@@ -625,11 +625,11 @@ function JambaHelperSettings:CreateScrollList( list )
 			displayColumn:SetScript( "PostClick", 
 				function( self, button )
 					if button == "LeftButton" then
-					list.rowClickCallback( self, displayColumn.rowNumber, displayColumn.columnNumber )
+						list.rowClickCallback( self, displayColumn.rowNumber, displayColumn.columnNumber )
 					end
 					if button == "RightButton" then
 						if list.rowRightClickCallback ~= nil then
-							list.rowRightClickCallback( self, displayColumn.rowNumber, displayColumn.columnNumber )
+							list.rowRightClickCallback( displayColumn.rowNumber, displayColumn.columnNumber )
 						end
 					end
 				end 
