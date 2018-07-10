@@ -1636,7 +1636,23 @@ end
 -- JAMBA QUEST CONTEXT MENU
 -------------------------------------------------------------------------------------------------------------
 
+local function JambaApiAbandonQuests(questID, questText)
+	AJM:Print(questID, questText)
+	title = questText
+	local data = {}
+	data.questID = questID
+	data.title = questText
+	StaticPopup_Hide( "ABANDON_QUEST" )
+	StaticPopup_Hide( "ABANDON_QUEST_WITH_ITEMS" )	
+	StaticPopup_Show( "JAMBAQUEST_ABANDON_ALL_TOONS", title, nil, data )
+end
 
+local function JambaApiUnTrackQuests(questID, questText)
+	AJM:JambaSendCommandToTeam( AJM.COMMAND_QUEST_TRACK, questID, questText, true )
+end
+
+
+ 
 function AJM:QuestMapQuestOptions_AbandonQuest(questID)                       
 	if JambaApi.GetTeamListMaximumOrderOnline() > 1 then	
 		local lastQuestIndex = GetQuestLogSelection()
@@ -1649,6 +1665,11 @@ function AJM:QuestMapQuestOptions_AbandonQuest(questID)
 		StaticPopup_Hide( "ABANDON_QUEST_WITH_ITEMS" )	
 		StaticPopup_Show( "JAMBAQUEST_ABANDON_ALL_TOONS", title, nil, data )
 	end	
+end
+
+function AJM:QuestObjectiveTracker_UntrackQuest(dropDownButton, questID)
+	--AJM:Print("test", questID)
+	AJM:QuestMapQuestOptions_TrackQuest(questID)
 end
 
 function AJM:QuestMapQuestOptions_TrackQuest(questID)
@@ -1698,8 +1719,6 @@ function AJM:JambaDoQuest_UnTrackQuest(questID, questLogIndex)
 	end
 end
 
-
-
 function AJM:QuestMapQuestOptions_Jamba_DoAbandonQuest( sender, questID, title )
 	local questLogIndex = GetQuestLogIndexByID( questID )
 	if questLogIndex ~= 0 then
@@ -1711,8 +1730,6 @@ function AJM:QuestMapQuestOptions_Jamba_DoAbandonQuest( sender, questID, title )
 		AJM:JambaSendMessageToTeam( AJM.db.messageArea, L["JAMBA_QUESTLOG_Have_Abandoned_Quest"]( title ), false )
 	end		
 end
-
-
 
 -- Jamba ALL menu at the bottom of quest WorldMap Quest Log
 
@@ -2056,3 +2073,6 @@ function AJM:JambaOnCommandReceived( characterName, commandName, ... )
 		AJM:DoMagicAutoAcceptQuestGrrrr( characterName, ... )
 	end
 end
+
+JambaApi.JambaApiAbandonQuest = JambaApiAbandonQuests
+JambaApi.JambaApiUnTrackQuest = JambaApiUnTrackQuests
