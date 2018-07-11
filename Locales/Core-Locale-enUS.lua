@@ -814,12 +814,15 @@ L["HIDE_OBJ_COMPLETED"] = "Hide Objectives Completed"
 L["HIDE_OBJ_COMPLETED_HELP"] = "Hide Objectives/Quests Completed By The Team"
 L["SEND_PROGRESS_MESSAGES"] = "Send Progress Messages"
 L["SEND_PROGRESS_MESSAGES_HELP"] = "Send Progress Messages To Message Area Box Below"
+L["QUESTWACHERINFORMATIONONE"] = "You Will Need To Do UI [/reload] To Change Lines And Width"
 L["LINES_TO_DISPLAY"] = "Lines Of Information To Display"
 L["TRACKER_WIDTH"] = "Tracker Width"
 L["DONE"] = "Done"
 L["TRACKER_TITLE_NAME"] = "Jamba Objectives Tracker"
 L["REWARDS"] = "Rewards"
 L["REWARDS_TEXT"] = "Completing This Quest Will \nReward You With:"
+L["HEADER_MOUSE_OVER_QUESTWATCHER"] = "Hold Down \"ALT\" Key To Move Jamba's Quest Tracker"
+L["UPDATE_MOUSE_OVER_QUESTWATCHER"] = "Force A Update Of The Jamba Quest Tracker"
 
 ------------------------
 -- Guild Locale

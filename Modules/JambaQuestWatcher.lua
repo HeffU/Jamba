@@ -18,12 +18,14 @@ local AJM = LibStub( "AceAddon-3.0" ):NewAddon(
 	"AceTimer-3.0"
 )
 
-local JambaQuestMapQuestOptionsDropDown = CreateFrame("Frame", "JambaQuestMapQuestOptionsDropDown", JambaQuestWatcherFrame, "UIDropDownMenuTemplate");
+
 
 -- Load libraries.
 local JambaUtilities = LibStub:GetLibrary( "JambaUtilities-1.0" )
 local JambaHelperSettings = LibStub:GetLibrary( "JambaHelperSettings-1.0" )
 AJM.SharedMedia = LibStub( "LibSharedMedia-3.0" )
+
+local JambaQuestMapQuestOptionsDropDown = CreateFrame("Frame", "JambaQuestMapQuestOptionsDropDown", JambaQuestWatcherFrame, "UIDropDownMenuTemplate")
 
 --  Constants and Locale for this module.
 AJM.moduleName = "Jamba-QuestWatcher"
@@ -364,7 +366,15 @@ function AJM:SettingsCreateQuestWatcherControl( top )
 ]]	
 	JambaHelperSettings:CreateHeading( AJM.settingsControlWatcher, L["APPEARANCE_LAYOUT_HEALDER"], movingTop, true )
 	movingTop = movingTop - headingHeight - verticalSpacing
-
+		-- Information line 1.
+	AJM.settingsControlWatcher.displayOptionsQuestWatcherInformation1 = JambaHelperSettings:CreateContinueLabel( 
+		AJM.settingsControlWatcher, 
+		headingWidth, 
+		left, 
+		movingTop,
+		L["QUESTWACHERINFORMATIONONE"] 
+	)	
+	movingTop = movingTop - labelContinueHeight
 	AJM.settingsControlWatcher.displayOptionsQuestWatcherLinesSlider = JambaHelperSettings:CreateSlider( 
 		AJM.settingsControlWatcher, 
 		halfWidthSlider, 
@@ -496,6 +506,23 @@ function AJM:CanDisplayQuestWatcher()
 	return false
 end
 
+local function Title_OnMouseDown(frame)
+	if IsAltKeyDown() then
+		frame:GetParent():StartMoving()
+	end
+end
+
+local function MoverSizer_OnMouseUp(mover)
+	local frame = mover:GetParent()
+	frame:StopMovingOrSizing()
+	local point, relativeTo, relativePoint, xOffset, yOffset = frame:GetPoint()
+	AJM.db.watcherFramePoint = point
+	AJM.db.watcherFrameRelativePoint = relativePoint
+	AJM.db.watcherFrameXOffset = xOffset
+	AJM.db.watcherFrameYOffset = yOffset
+end
+
+
 function AJM:CreateQuestWatcherFrame()
 	-- The frame.
 	local frame = CreateFrame( "Frame", "JambaQuestWatcherWindowFrame", UIParent )
@@ -504,22 +531,6 @@ function AJM:CreateQuestWatcherFrame()
 	frame:SetClampedToScreen( true )
 	frame:EnableMouse( false )
 	frame:SetMovable( true )	
-	frame:RegisterForDrag( "LeftButton" )
-	frame:SetScript( "OnDragStart", 
-		function( this ) 
-			if IsAltKeyDown() then
-				this:StartMoving() 
-			end
-		end )
-	frame:SetScript( "OnDragStop", 
-		function( this ) 
-			this:StopMovingOrSizing() 
-			local point, relativeTo, relativePoint, xOffset, yOffset = this:GetPoint()
-			AJM.db.watcherFramePoint = point
-			AJM.db.watcherFrameRelativePoint = relativePoint
-			AJM.db.watcherFrameXOffset = xOffset
-			AJM.db.watcherFrameYOffset = yOffset
-		end	)	
 	frame:ClearAllPoints()
 	frame:SetPoint( AJM.db.watcherFramePoint, UIParent, AJM.db.watcherFrameRelativePoint, AJM.db.watcherFrameXOffset, AJM.db.watcherFrameYOffset )
 	frame:SetBackdrop( {
@@ -529,18 +540,30 @@ function AJM:CreateQuestWatcherFrame()
 		insets = { left = 3, right = 3, top = 3, bottom = 3 }
 	} )
 	-- Create the title for the team list frame.
-	local titleName = frame:CreateFontString( "JambaQuestWatcherWindowFrameTitleText", "OVERLAY", "GameFontNormal" )
-    titleName:SetPoint( "TOPLEFT", frame, "TOPLEFT", 7, -7 )
-    titleName:SetTextColor( 1.00, 1.00, 1.00 )
-    titleName:SetText( L["TRACKER_TITLE_NAME"] )
-	frame.titleName = titleName
+    local titleButton = CreateFrame( "Button", "JambaQuestWatcherWindowFrameTitle", frame )
+	titleButton:SetPoint( "TOPLEFT", frame, "TOPLEFT", -5, -4 )
+	titleButton:SetWidth( AJM.db.watcherFrameWidth - 100 )
+	titleButton:SetHeight( 20 )	
+	titleButton:SetScript("OnMouseDown", Title_OnMouseDown)	
+	titleButton:SetScript("OnMouseUp", MoverSizer_OnMouseUp)
+	titleButton:SetScript("OnEnter", function(self) AJM:ShowTooltip(titleButton, "headerMouseOver", true) end)
+	titleButton:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
+	titleButton.titleName = titleButton:CreateFontString( titleButton:GetName().."Text", "OVERLAY", "GameFontNormal" )
+	titleButton.titleName:SetJustifyH( "CENTER" )
+	titleButton.titleName:SetAllPoints( titleButton )
+	titleButton.titleName:SetTextColor( 1.00, 1.00, 1.00 )
+    titleButton.titleName:SetText( L["TRACKER_TITLE_NAME"] )
+	frame.titleName =  titleButton.titleName
+
 	-- Update button.
 	local updateButton = CreateFrame( "Button", "JambaQuestWatcherWindowFrameButtonUpdate", frame, "UIPanelButtonGrayTemplate" )
-	updateButton:SetScript( "OnClick", AJM.JambaQuestWatchListUpdateButtonClicked )
 	updateButton:SetPoint( "TOPRIGHT", frame, "TOPRIGHT", -5, -4 )
 	updateButton:SetHeight( 20 )
 	updateButton:SetWidth( 100 )
 	updateButton:SetText( L["UPDATE"] )		
+	updateButton:SetScript( "OnClick", AJM.JambaQuestWatchListUpdateButtonClicked )
+	updateButton:SetScript("OnEnter", function(self) AJM:ShowTooltip(updateButton, "update", true) end)
+	updateButton:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 	-- Add an area for the "in the field quest" notifications.
 	frame.fieldNotificationsTop = -24
 	frame.fieldNotifications = CreateFrame( "Frame", "JambaQuestWatcherFieldQuestFrame", frame )
@@ -599,6 +622,22 @@ function AJM:CreateQuestWatcherFrame()
 	AJM:SettingsUpdateBorderStyle()	
 	AJM:SettingsUpdateFontStyle()
 	AJM.questWatcherFrameCreated = true
+end
+
+function AJM:ShowTooltip(frame, info, show)
+	if show then
+		GameTooltip:SetOwner(frame, "ANCHOR_TOP")
+		GameTooltip:SetPoint("TOPLEFT", frame, "TOPRIGHT", 16, 0)
+		GameTooltip:ClearLines()
+		if info == "headerMouseOver" then
+			GameTooltip:AddLine(L["HEADER_MOUSE_OVER_QUESTWATCHER"], 1, 0.82, 0, 1)
+		elseif info == "update" then
+			GameTooltip:AddLine(L["UPDATE_MOUSE_OVER_QUESTWATCHER"], 1, 0.82, 0, 1)
+		end
+		GameTooltip:Show()
+	else
+	GameTooltip:Hide()
+	end
 end
 
 
@@ -762,7 +801,7 @@ function AJM:SettingsRefresh()
 	if AJM.questWatcherFrameCreated == true and InCombatLockdown() == false then
 		AJM:SettingsUpdateBorderStyle()
 		AJM:SettingsUpdateFontStyle()
-		AJM:SetQuestWatcherVisibility()	
+		AJM:SetQuestWatcherVisibility()
 	end
 end
 
@@ -1555,7 +1594,7 @@ function AJM:GetTotalCharacterAmountFromWatchList( questID, objectiveIndex )
     end
 	AJM:DebugMessage( "AMTOT:", amountOverTotal )
 		if amountOverTotal == "0/0" then
-			AJM:Print("test", countDones, countCharacters)
+			--AJM:Print("test", countDones, countCharacters)
 			if countDones == countCharacters then
 				amountOverTotal = L["DONE"]
 			else
@@ -1891,7 +1930,7 @@ end
 -- QUEST WATCH DISPLAY LIST MECHANICS
 -------------------------------------------------------------------------------------------------------------
 
-function AJM:QuestWatcherQuestListDrawLine( frame, iterateDisplayRows, type, information, amount, childrenAreHidden, key, questTeamCount )
+function AJM:QuestWatcherQuestListDrawLine( frame, iterateDisplayRows, type, information, amount, childrenAreHidden, key, questTeamCount, questID )
 	local toggleDisplay = ""
 	local padding = ""
 	local teamCount = ""
@@ -1919,7 +1958,6 @@ function AJM:QuestWatcherQuestListDrawLine( frame, iterateDisplayRows, type, inf
 	local matchData = string.find( information, "Bonus:" )
 	local matchDataScenario = string.find( information, "Scenario:" )
 	local matchDataScenarioBouns = string.find( information, "ScenarioBouns:" )
-	
 	-- Scenario
 	if matchDataScenario then
 		local name = gsub(information, "[^|]+:", "")
@@ -1975,6 +2013,12 @@ function AJM:QuestWatcherQuestListDrawLine( frame, iterateDisplayRows, type, inf
 			frame.questWatchList.rows[iterateDisplayRows].columns[2].textString:SetTextColor( NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1.0 )
 			-- Turn on the mouse for these buttons.
 		end
+	end
+	local questItemLink, questItemIcon = AJM:GetQuestItemFromQuestID(questID)
+	if questItemLink ~= nil and type == "QUEST_HEADER" then
+		--AJM:Print("test", information )
+		AJM:UpdateQuestItemButton( iterateDisplayRows, questItemLink )
+		
 	end
 	frame.questWatchList.rows[iterateDisplayRows].key = key
 end
@@ -2051,7 +2095,7 @@ function AJM:QuestWatcherQuestListScrollRefresh()
 	
 			-- Put information and amount into columns.
 			local information, amount, type, questID, childrenAreHidden, key, questTeamCount, objectiveIndex = AJM:GetQuestWatchInfoAtOrderPosition( dataRowNumber )
-			AJM:QuestWatcherQuestListDrawLine( frame, iterateDisplayRows, type, information, amount, childrenAreHidden, key, questTeamCount )
+			AJM:QuestWatcherQuestListDrawLine( frame, iterateDisplayRows, type, information, amount, childrenAreHidden, key, questTeamCount, questID )
 			atLeastOneRowShowing = true
 		end
 	end
@@ -2083,10 +2127,7 @@ function AJM:QuestWatcherQuestListRowClick( rowNumber, columnNumber )
 				local questItemLink, questItemIcon = AJM:GetQuestItemFromQuestID(questID)
 				if questItemLink ~= nil then
 					local itemName = GetItemInfo(questItemLink)
-					if InCombatLockdown() == false then
-						frame.questWatchList.rows[rowNumber].columns[columnNumber]:SetAttribute("type1", "item")
-						frame.questWatchList.rows[rowNumber].columns[columnNumber]:SetAttribute( "item", itemName )
-					end
+					AJM:UpdateQuestItemButton( rowNumber, itemName )
 				end
 		   end	
 		end
@@ -2122,23 +2163,22 @@ function AJM.QuestWatcherQuestListRowOnEnter( rowNumber, columnNumber )
 	if key ~= nil and key ~= "" then
 		local information, amount, type, questID, childrenAreHidden, keyStored = AJM:GetQuestWatchInfoFromKey( key )
 		--AJM:Print("test", information, questID)
-		GameTooltip:ClearAllPoints();
-		GameTooltip:SetPoint("TOPRIGHT", toolTipFrame, "TOPLEFT", 0, 0);
+		GameTooltip:ClearAllPoints()
+		GameTooltip:SetPoint("TOPRIGHT", toolTipFrame, "TOPLEFT", 0, 0)
 		GameTooltip:SetOwner( toolTipFrame, "ANCHOR_PRESERVE")
 		if type == "QUEST_HEADER" and columnNumber == 2 then
-			--if columnNumber == 2 then
-				local questItemLink, questItemIcon = AJM:GetQuestItemFromQuestID(questID)
-				if questItemLink ~= nil then
-					GameTooltip:SetHyperlink(questItemLink)
-					GameTooltip:Show()
-				end
+			local questItemLink, questItemIcon = AJM:GetQuestItemFromQuestID(questID)
+			if questItemLink ~= nil then
+				GameTooltip:SetHyperlink(questItemLink)
+				GameTooltip:Show()
+			end
 		end	
 			if columnNumber == 1 then
 				toolTipFrame:SetAlpha( 1.0 )
 				if ( HaveQuestData(questID) and GetQuestLogRewardXP(questID) == 0 and GetNumQuestLogRewardCurrencies(questID) == 0
 					and GetNumQuestLogRewards(questID) == 0 and GetQuestLogRewardMoney(questID) == 0 and GetQuestLogRewardArtifactXP(questID) == 0 ) then
-					GameTooltip:Hide();
-					return;
+					GameTooltip:Hide()
+					return
 				end
 				GameTooltip:AddLine(L["REWARDS"], 1, 0.82, 0, 1)
 				GameTooltip:AddLine(L["REWARDS_TEXT"],1,1,1,1)
@@ -2184,11 +2224,11 @@ function AJM.QuestWatcherQuestListRowOnEnter( rowNumber, columnNumber )
 					end
 				end
 				GameTooltip:Show()
-				
 			end
 		end
 	end
 end
+
 
 function  AJM.QuestWatcherQuestListRowOnLeave()
 	GameTooltip:Hide()
@@ -2201,18 +2241,18 @@ function JambaQuestMapQuestOptionsDropDown_Initialize(self)
 	if (questID ~= 0 ) then
 		local questLogIndex = GetQuestLogIndexByID(questID)
 		
-		local info = UIDropDownMenu_CreateInfo()
-		info.text = questText
-		info.isTitle = 1
-		info.notCheckable = 1
-		UIDropDownMenu_AddButton(info)
+		local infoTitle = UIDropDownMenu_CreateInfo()
+		infoTitle.text = questText
+		infoTitle.isTitle = 1
+		infoTitle.notCheckable = 1
+		UIDropDownMenu_AddButton(infoTitle)
+		
 		local info = UIDropDownMenu_CreateInfo()
 		info.isNotRadio = true
 		info.notCheckable = true
-		table.insert( UISpecialFrames, "JambaQuestMapQuestOptionsDropDown" )
-		
 		info.text = OBJECTIVES_STOP_TRACKING
-		info.func = function(_, questID) JambaApi.QuestMapQuestOptions_TrackQuest(questID, questText) end
+		
+		info.func = function(_, questID) AJM:QuestMapQuestOptions_ToggleTrackQuest(questID, questText) end
 		info.arg1 = self.questID
 		info.checked = false
 		UIDropDownMenu_AddButton(info)
@@ -2227,12 +2267,14 @@ function JambaQuestMapQuestOptionsDropDown_Initialize(self)
 		info.func = function(_, questID) AJM:QuestMapQuestOptions_AbandonQuest(questID, questText) end
 		info.arg1 = self.questID
 		info.disabled = nil
+		
 		UIDropDownMenu_AddButton(info)
 
 	end
 end
 
 function AJM:QuestMapQuestOptions_ToggleTrackQuest(questID, questText)
+	AJM:Print("test", questID, questText)
 	JambaApi.JambaApiUnTrackQuest( questID, questText )
 end
 
@@ -2245,6 +2287,14 @@ end
 
 function AJM:QuestMapQuestOptions_AbandonQuest(questID, questText)
 	JambaApi.JambaApiAbandonQuest(questID, questText)
+end
+
+function AJM:UpdateQuestItemButton( rowNumber, itemName )
+	if InCombatLockdown() == false then
+		local frame = JambaQuestWatcherFrame
+		frame.questWatchList.rows[rowNumber].columns[2]:SetAttribute("type1", "item")
+		frame.questWatchList.rows[rowNumber].columns[2]:SetAttribute( "item", itemName )
+	end
 end
 
 ------------------------------------------------------------------------------------------------------------
@@ -2447,14 +2497,3 @@ function AJM:JambaOnCommandReceived( characterName, commandName, ... )
 	 
 	end
 end
-
-local function test()
-	for key, questWatchInfoContainer in pairs( AJM.questWatchObjectivesList ) do
-		local position = questWatchInfoContainer.position
-		--AJM:Print("dataQuest", key, position, questWatchInfoContainer.questID )
-
-	end
-end	
-
-JambaApi.questTest = test
-JambaApi.ClearAllQuests = ClearAllQuests

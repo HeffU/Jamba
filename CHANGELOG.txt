@@ -44,15 +44,15 @@ Release Date: TBA
 ## Quest
 	- Tell "Team" If The A Character Has A Full Inventory When Handing In The A Quest With A Item
 
-## Quest-Watcher
+## Quest-Tracker
 	- Removed Map Icon
 	- ProgressBar Quests Now Only Show's A Single Real Percent And Average Team Percent	
-	- Quests That Do Not Have A  "Objective As Such" Will Now So On The Jamba-Tracker
+	- Quests That Do Not Have A  "Objective As Such" Will Now Show On The Jamba-Tracker
 	- Scenario Should always be at the top of the Quest-Tracker
 	- Shows Quest Items On The Jamba Tracker
 	- Shows Faction Icon On New Campaign Quests
 	- Added A ToolTip That Shows Quest Rewards 
-	- Quest Objectives That have a Percent Tracker Now Tracks on Watcher
+	- Quest Objectives That have a Percent Tracker, Now Tracks Correctly On Tracker
 	- Added A Right ClickDropDown Menu For Extra Options 
 	
 

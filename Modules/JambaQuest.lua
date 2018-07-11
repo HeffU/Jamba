@@ -1637,7 +1637,7 @@ end
 -------------------------------------------------------------------------------------------------------------
 
 local function JambaApiAbandonQuests(questID, questText)
-	AJM:Print(questID, questText)
+	--AJM:Print(questID, questText)
 	title = questText
 	local data = {}
 	data.questID = questID
@@ -1648,7 +1648,8 @@ local function JambaApiAbandonQuests(questID, questText)
 end
 
 local function JambaApiUnTrackQuests(questID, questText)
-	AJM:JambaSendCommandToTeam( AJM.COMMAND_QUEST_TRACK, questID, questText, true )
+	--AJM:Print("test", questID, questText)
+	AJM:JambaSendCommandToTeam( AJM.COMMAND_QUEST_TRACK, questID, questText, false )
 end
 
 
@@ -1691,6 +1692,7 @@ function AJM:QuestMapQuestOptions_TrackQuest(questID)
 end
 
 function AJM:QuestMapQuestOptions_Jamba_DoQuestTrack( sender, questID, title, track )
+	--AJM:Print("test1.5", sender, questID, title, track)
 	local questLogIndex = GetQuestLogIndexByID( questID )
 	if questLogIndex ~= 0 then
 		if track then
@@ -1713,7 +1715,7 @@ end
 
 
 function AJM:JambaDoQuest_UnTrackQuest(questID, questLogIndex)
-	--AJM:Print("test", questID, questLogIndex )
+	--AJM:Print("test2", questID, questLogIndex )
 	if ( IsQuestWatched(questLogIndex) ) then
 		QuestObjectiveTracker_UntrackQuest(nil, questID)
 	end
@@ -2022,20 +2024,22 @@ function AJM:JambaOnCommandReceived( characterName, commandName, ... )
 		AJM:QuestMapQuestOptions_Jamba_DoAbandonQuest( characterName, ... )
 	end
 	 
+
+	 
 	 -- If this character sent this command, don't action it.
 	if characterName == AJM.characterName then
 		return
 	end
-
+	if commandName == AJM.COMMAND_UNTRACK_ALL_QUESTS then		
+		AJM:DoUnTrackAllQuestsFromThisToon()
+	end
 	if commandName == AJM.COMMAND_ABANDON_ALL_QUESTS then		
 		AJM:DoAbandonAllQuestsFromThisToon()
 	end
 	if commandName == AJM.COMMAND_TRACK_ALL_QUESTS then		
 		AJM:DoTrackAllQuestsFromThisToon()
 	end
-	if commandName == AJM.COMMAND_UNTRACK_ALL_QUESTS then		
-		AJM:DoUnTrackAllQuestsFromThisToon()
-	end
+
 	if commandName == AJM.COMMAND_SHARE_ALL_QUESTS then		
 		AJM:DoShareAllQuestsFromThisToon()
 	end
