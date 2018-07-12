@@ -46,7 +46,7 @@ AJM.settings = {
 		master = "",
         teamList = {},
 		newTeamList = {},
-		isboxerSync = true,
+		isboxerSync = false,
 		--characterOnline = {},
 		--characterClass = {},
 		masterChangePromoteLeader = false,
@@ -215,7 +215,7 @@ local function SettingsCreateTeamList()
 	local iconSize = 24
 	local groupListWidth = 200
 	local extaSpacing = 40
-	local rowHeight = 25
+	local rowHeight = 30
 	local rowsToDisplay = 8
 	local inviteDisbandButtonWidth = 105
 	local setMasterButtonWidth = 120
@@ -272,11 +272,11 @@ local function SettingsCreateTeamList()
 	list.columnInformation[1].width = 30
 	list.columnInformation[1].alignment = "LEFT"
 	list.columnInformation[2] = {}
-	list.columnInformation[2].width = 50
-	list.columnInformation[2].alignment = "LEFT"
+	list.columnInformation[2].width = 55
+	list.columnInformation[2].alignment = "CENTER"
 	list.columnInformation[3] = {}
-	list.columnInformation[3].width = 20
-	list.columnInformation[3].alignment = "LEFT"	
+	list.columnInformation[3].width = 15
+	list.columnInformation[3].alignment = "RIGHT"	
 	list.scrollRefreshCallback = AJM.SettingsTeamListScrollRefresh
 	list.rowClickCallback = AJM.SettingsTeamListRowClick
 	AJM.settingsControl.teamList = list
@@ -294,7 +294,7 @@ local function SettingsCreateTeamList()
 	listTwo.columnInformation = {}
 	listTwo.columnInformation[1] = {}
 	listTwo.columnInformation[1].width = 80
-	listTwo.columnInformation[1].alignment = "LEFT"
+	listTwo.columnInformation[1].alignment = "CENTER"
 	listTwo.scrollRefreshCallback = AJM.SettingsGroupListScrollRefresh
 	listTwo.rowClickCallback = AJM.SettingsGroupListRowClick
 	AJM.settingsControl.groupList = listTwo
@@ -325,13 +325,25 @@ local function SettingsCreateTeamList()
 		AJM.SettingsAddPartyClick,
 		L["BUTTON_ADDALL_HELP"]
 	)
+	AJM.settingsControl.teamListButtonAddIsboxerList = JambaHelperSettings:Icon( 
+		AJM.settingsControl, 
+		iconSize,
+		iconSize,
+		"Interface\\Addons\\Jamba\\Media\\Isboxer_Add.tga", --icon Image
+		left - iconSize - 11 , 
+		topOfList - verticalSpacing - iconHight * 2, 
+		L[""], 
+		AJM.SettingsAddIsboxerListClick,
+		L["BUTTON_ISBOXERADD_HELP"]
+	)	
+
 	AJM.settingsControl.teamListButtonMoveUp = JambaHelperSettings:Icon( 
 		AJM.settingsControl, 
 		iconSize,
 		iconSize,
 		"Interface\\Addons\\Jamba\\Media\\CharUp.tga", --icon Image
 		left - iconSize - 11,
-		topOfList - verticalSpacing - iconHight * 2, 
+		topOfList - verticalSpacing - iconHight * 3, 
 		L[""], 
 		AJM.SettingsMoveUpClick,
 		L["BUTTON_UP_HELP"]
@@ -342,7 +354,7 @@ local function SettingsCreateTeamList()
 		iconSize,	
 		"Interface\\Addons\\Jamba\\Media\\CharDown.tga", --icon Image
 		left - iconSize - 11,
-		topOfList - verticalSpacing - iconHight * 3,
+		topOfList - verticalSpacing - iconHight * 4,
 		L[""],
 		AJM.SettingsMoveDownClick,
 		L["BUTTON_DOWN_HELP"]		
@@ -353,7 +365,7 @@ local function SettingsCreateTeamList()
 		iconSize,
 		"Interface\\Addons\\Jamba\\Media\\CharRemove.tga", --icon Image
 		left - iconSize - 11 , 
-		topOfList - verticalSpacing - iconHight * 4,
+		topOfList - verticalSpacing - iconHight * 5,
 		L[""], 
 		AJM.SettingsRemoveClick,
 		L["BUTTON_REMOVE_HELP"]
@@ -364,7 +376,7 @@ local function SettingsCreateTeamList()
 		iconSize,
 		"Interface\\Addons\\Jamba\\Media\\CharMaster.tga", --icon Image
 		left - iconSize - 11 , 
-		topOfList - verticalSpacing - iconHight * 5,
+		topOfList - verticalSpacing - iconHight * 6,
 		L[""], 
 		AJM.SettingsSetMasterClick,
 		L["BUTTON_MASTER_HELP"]
@@ -807,7 +819,7 @@ end
 
 
 
--- Add all party members to the member list. does not worl cross rwalm todo
+-- Add all party/raid members to the member list. does not worl cross rwalm todo
 function AJM:AddPartyMembers()
 	--local numberPartyMembers = GetNumSubgroupMembers()
 	local numberPartyMembers = GetNumGroupMembers()
@@ -828,6 +840,19 @@ function AJM:AddPartyMembers()
 			end
 		end
 	end
+end
+
+-- Add all isboxer team members to the member list. does not worl cross rwalm todo
+function AJM:AddIsboxerMembers()
+	if IsAddOnLoaded("Isboxer" ) == true then 
+		for characterName, teamStatus in pairs( AJM.IsboxerSyncList ) do
+			if IsCharacterInTeam( characterName ) == false then
+				if teamStatus == "add" and characterName ~= AJM.characterName then 
+					AddMember( characterName )
+				end	
+			end	
+		end
+	end	
 end
 
 -- Add a member to the member list.
@@ -1450,7 +1475,7 @@ function AJM:SettingsRefresh()
 	-- Ensure correct state.
 	AJM.settingsControl.partyInviteControlCheckBoxSetAllAssist:SetDisabled (not AJM.db.inviteConvertToRaid )
 	AJM.settingsControl.teamListCheckBoxSyncIsboxer:SetDisabled ( not IsAddOnLoaded("Isboxer" ) )
-	
+	AJM.settingsControl.teamListButtonAddIsboxerList:SetDisabled ( not IsAddOnLoaded("Isboxer" ) )
 	-- Update the settings team list.
 	AJM:SettingsTeamListScrollRefresh()
 	-- Check the opt out of loot settings.
@@ -1463,7 +1488,6 @@ function AJM:JambaOnSettingsReceived( characterName, settings )
 	-- Update the settings.
 		AJM.db.newTeamList = JambaUtilities:CopyTable( settings.newTeamList )
 		AJM.db.isboxerSync = settings.isboxerSync
-		
 		AJM.db.masterChangePromoteLeader = settings.masterChangePromoteLeader 
 		AJM.db.inviteAcceptTeam = settings.inviteAcceptTeam 
 		AJM.db.inviteAcceptFriends = settings.inviteAcceptFriends 
@@ -1583,7 +1607,7 @@ local function GetTagListMaxPosition()
 end
 
 function AJM:SettingsTeamListRowClick( rowNumber, columnNumber )		
-	if AJM.settingsControl.teamListOffset + rowNumber <= GetTeamListMaximumOrder() then
+	if AJM.settingsControl.teamListOffset + rowNumber <= GetTeamListMaximumOrder() then	
 		AJM.settingsControl.teamListHighlightRow = AJM.settingsControl.teamListOffset + rowNumber
 		AJM:SettingsTeamListScrollRefresh()
 		--AJM:SettingsGroupListScrollRefresh()
@@ -1591,6 +1615,16 @@ function AJM:SettingsTeamListRowClick( rowNumber, columnNumber )
 		AJM.settingsControl.groupListHighlightRow = 1
 		local characterName = GetCharacterNameAtOrderPosition( AJM.settingsControl.teamListHighlightRow )
 		DisplayGroupsForCharacterInGroupsList( characterName )
+		if columnNumber == 3 then
+			local characterName = GetCharacterNameAtOrderPosition( AJM.settingsControl.teamListHighlightRow )
+			local onLine = GetCharacterOnlineStatus(characterName)
+			if onLine == true and characterName ~= AJM.characterName then
+				setOffline( characterName )
+			else	
+				setOnline( characterName )
+			end	
+		end
+		
 	end
 end											   
 
@@ -1729,6 +1763,11 @@ end
 function AJM.SettingsAddPartyClick( event )
 	AJM:AddPartyMembers()
 end
+
+function AJM:SettingsAddIsboxerListClick( event )
+	AJM:AddIsboxerMembers()
+end
+
 function AJM:SettingsInviteClick( event )
 	AJM:InviteTeamToParty(nil)
 end
@@ -1746,7 +1785,6 @@ function AJM:SettingsSetMasterClick( event )
 	local characterName = GetCharacterNameAtOrderPosition( AJM.settingsControl.teamListHighlightRow )
 	SetMaster( characterName )
 	AJM:SettingsTeamListScrollRefresh()
-	--AJM:SettingsGroupListScrollRefresh()
 end
 
 function AJM:SettingsMasterChangeToggle( event, checked )

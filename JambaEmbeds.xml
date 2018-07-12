@@ -26,6 +26,7 @@
 	<Include file="Libs\AceGUI-3.0-SharedMediaWidgets\widget.xml" />
 	<Include file="Libs\LibBagUtils-1.0\LibBagUtils-1.0.xml" />
 	<Include file="Libs\LibItemUpgradeInfo-1.0\LibItemUpgradeInfo-1.0.xml" />
+	<Script file="Libs\LibAuras\LibAuras.lua" /> 
 	<Script file="Libs\LibActionButtonJamba-1.0.lua" /> 
 	<Script file="Libs\LibButtonGlow-1.0\LibButtonGlow-1.0.lua" />
 	<Script file="Libs\UTF8\utf8data.lua" />

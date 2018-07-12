@@ -65,6 +65,7 @@ AJM.settings = {
 		CcMessage = L["CCED"],
 		warningArea = JambaApi.DefaultWarningArea(),
 		autoAcceptResurrectRequest = true,
+		autoAcceptResurrectRequestOnlyFromTeam = true,
 		acceptDeathRequests = true,
 		autoDenyDuels = true,
 		autoAcceptSummonRequest = false,
@@ -242,8 +243,18 @@ local function SettingsCreateToon( top )
 		left, 
 		movingTop, 
 		L["ACCEPT_RESURRECT"],
-		AJM.SettingsToggleAutoAcceptResurrectToon,
+		AJM.SettingsToggleAutoAcceptResurrectRequests,
 		L["ACCEPT_RESURRECT_AUTO"]
+	)
+	movingTop = movingTop - checkBoxHeight
+	AJM.settingsControlToon.checkBoxAutoAcceptResurrectRequestOnlyFromTeam = JambaHelperSettings:CreateCheckBox( 
+		AJM.settingsControlToon, 
+		halfWidth, 
+		left + 20, 
+		movingTop, 
+		L["ACCEPT_RESURRECT_FROM_TEAM"],
+		AJM.SettingsToggleAutoAcceptResurrectRequestsOnlyFromTeam,
+		L["ACCEPT_RESURRECT_FROM_TEAM_HELP"]
 	)
 	movingTop = movingTop - checkBoxHeight
 	AJM.settingsControlToon.checkBoxAcceptDeathRequests = JambaHelperSettings:CreateCheckBox( 
@@ -602,6 +613,7 @@ function AJM:SettingsRefresh()
 	AJM.settingsControlWarnings.editBoxCCMessage:SetText( AJM.db.CcMessage ) 
 	AJM.settingsControlWarnings.dropdownWarningArea:SetValue( AJM.db.warningArea )
 	AJM.settingsControlToon.checkBoxAutoAcceptResurrectRequest:SetValue( AJM.db.autoAcceptResurrectRequest )
+	AJM.settingsControlToon.checkBoxAutoAcceptResurrectRequestOnlyFromTeam:SetValue( AJM.db.autoAcceptResurrectRequestOnlyFromTeam )
 	AJM.settingsControlToon.checkBoxAcceptDeathRequests:SetValue( AJM.db.acceptDeathRequests )
 	AJM.settingsControlToon.checkBoxAutoDenyDuels:SetValue( AJM.db.autoDenyDuels )
 	AJM.settingsControlToon.checkBoxAutoAcceptSummonRequest:SetValue( AJM.db.autoAcceptSummonRequest )
@@ -627,6 +639,7 @@ function AJM:SettingsRefresh()
 	AJM.settingsControlMerchant.checkBoxAutoRepairUseGuildFunds:SetDisabled( not AJM.db.autoRepair )
 	AJM.settingsControlWarnings.editBoxBagsFullMessage:SetDisabled( not AJM.db.warnBagsFull )
 	AJM.settingsControlWarnings.editBoxCCMessage:SetDisabled( not AJM.db.warnCC )
+	AJM.settingsControlToon.checkBoxAutoAcceptResurrectRequestOnlyFromTeam:SetDisabled( not AJM.db.autoAcceptResurrectRequest )
 end
 
 function AJM:SettingsPushSettingsClick( event )
@@ -662,6 +675,12 @@ function AJM:SettingsToggleAutoAcceptResurrectRequests( event, checked )
 	AJM.db.autoAcceptResurrectRequest = checked
 	AJM:SettingsRefresh()
 end
+
+function AJM:SettingsToggleAutoAcceptResurrectRequestsOnlyFromTeam( event, checked )
+	AJM.db.autoAcceptResurrectRequestOnlyFromTeam = checked
+	AJM:SettingsRefresh()
+end
+
 
 function AJM:SettingsToggleAcceptDeathRequests( event, checked )
 	AJM.db.acceptDeathRequests = checked
@@ -896,6 +915,7 @@ function AJM:JambaOnSettingsReceived( characterName, settings )
 		AJM.db.warnCC = settings.warnCC
 		AJM.db.CcMessage = settings.CcMessage			
 		AJM.db.autoAcceptResurrectRequest = settings.autoAcceptResurrectRequest
+		AJM.db.autoAcceptResurrectRequestOnlyFromTeam = settings.autoAcceptResurrectRequestOnlyFromTeam
 		AJM.db.acceptDeathRequests = settings.acceptDeathRequests
 		AJM.db.autoDenyDuels = settings.autoDenyDuels
 		AJM.db.autoAcceptSummonRequest = settings.autoAcceptSummonRequest
@@ -1152,8 +1172,26 @@ function AJM:doSoulStone()
 	end
 end
 
-function AJM:RESURRECT_REQUEST( event, ... )
+function AJM:RESURRECT_REQUEST( event, name, ... )
+	AJM:Print("test Res From", name)
+	local canResurrect = false 
 	if AJM.db.autoAcceptResurrectRequest == true then
+		AJM:Print("test Res From", name)
+		canResurrect = true
+	end	
+	if AJM.db.autoAcceptResurrectRequestOnlyFromTeam == true then
+		for index, characterName in JambaApi.TeamListOrderedOnline() do
+			unit = Ambiguate( characterName, "none" )
+			AJM:Print("test", name, "vs", unit )
+			if unit == name then
+				canResurrect = true
+				break
+			else
+				canResurrect = false
+			end
+		end
+	end
+	if canResurrect == true then 	
 		AcceptResurrect()
 		StaticPopup_Hide( "RESURRECT")
 		StaticPopup_Hide( "RESURRECT_NO_SICKNESS" )

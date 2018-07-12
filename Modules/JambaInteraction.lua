@@ -21,6 +21,7 @@ local AJM = LibStub( "AceAddon-3.0" ):NewAddon(
 -- Get the Jamba Utilities Library.
 local JambaUtilities = LibStub:GetLibrary( "JambaUtilities-1.0" )
 local JambaHelperSettings = LibStub:GetLibrary( "JambaHelperSettings-1.0" )
+local LibAuras = LibStub:GetLibrary("LibAuras")
 
 --  Constants and Locale for this module.
 AJM.moduleName = "Jamba-Interaction"
@@ -102,9 +103,16 @@ AJM.MESSAGE_TAXI_TAKEN = "JambaTaxiTaxiTaken"
 
 -- Initialise the module.
 function AJM:OnInitialize()
+	-- Taxi
 	AJM.JambaTakesTaxi = false
 	AJM.JambaLeavsTaxi = false
 	AJM.TaxiFrameName = TaxiFrame
+	-- Mount
+	AJM.castingMount = nil
+	AJM.isMounted = nil
+	AJM.responding = false
+	--7.3.5 code Remove!
+	AJM.mountName = nil
 	-- Create the settings control.
 	AJM:SettingsCreate()
 	-- Initialse the JambaModule part of this module.
@@ -119,10 +127,11 @@ function AJM:OnEnable()
 	-- Hook the TaketaxiNode function.
 	AJM:SecureHook( "TakeTaxiNode" )
 	AJM:SecureHook( "TaxiRequestEarlyLanding" )
-	if JambaPrivate.Core.isBetaBuild() == false then
-		AJM:RegisterEvent("UNIT_SPELLCAST_START")
-		AJM:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
-	end	
+	--if JambaPrivate.Core.isBetaBuild() == false then
+		AJM:RegisterEvent( "PLAYER_ENTERING_WORLD" )
+		AJM:RegisterEvent( "UNIT_SPELLCAST_START" )
+		AJM:RegisterEvent( "UNIT_SPELLCAST_SUCCEEDED" )
+	--end
 	AJM:RegisterEvent( "LOOT_READY" )
 	if JambaPrivate.Core.isBetaBuild() == true then
 		AJM:RegisterEvent( "TAXIMAP_OPENED" )
@@ -239,6 +248,7 @@ function AJM:SettingsCreateTaxi( top )
 		AJM.SettingsToggleDisMountWithMaster,
 		L["ONLY_DISMOUNT_WITH_MASTER_HELP"]
 	)	
+	--[[
 	movingTop = movingTop - checkBoxHeight
 	AJM.settingsControl.checkBoxMountInRange = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
@@ -249,6 +259,7 @@ function AJM:SettingsCreateTaxi( top )
 		AJM.SettingsToggleMountInRange,
 		L["ONLY_MOUNT_WHEN_IN_RANGE_HELP"]
 	)	
+	]]
 	-- Loot
 	movingTop = movingTop - headingHeight
 	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["LOOT_OPTIONS"] , movingTop, false )	
@@ -383,7 +394,7 @@ function AJM:JambaOnSettingsReceived( characterName, settings )
 		AJM.db.mountWithTeam = settings.mountWithTeam
 		AJM.db.dismountWithTeam = settings.dismountWithTeam
 		AJM.db.dismountWithMaster = settings.dismountWithMaster
-		AJM.db.mountInRange = settings.mountInRange
+		--AJM.db.mountInRange = settings.mountInRange
 		
 		AJM.db.autoLoot = settings.autoLoot
 		AJM.db.tellBoERare = settings.tellBoERare
@@ -412,7 +423,7 @@ function AJM:SettingsRefresh()
 	AJM.settingsControl.checkBoxMountWithTeam:SetValue( AJM.db.mountWithTeam )
 	AJM.settingsControl.checkBoxDismountWithTeam:SetValue( AJM.db.dismountWithTeam )
 	AJM.settingsControl.checkBoxDismountWithMaster:SetValue( AJM.db.dismountWithMaster )
-	AJM.settingsControl.checkBoxMountInRange:SetValue( AJM.db.mountInRange )
+	--AJM.settingsControl.checkBoxMountInRange:SetValue( AJM.db.mountInRange )
 	AJM.settingsControl.dropdownMessageArea:SetValue( AJM.db.messageArea )
 	AJM.settingsControl.dropdownWarningArea:SetValue( AJM.db.warningArea )
 	AJM.settingsControl.checkBoxAutoLoot:SetValue( AJM.db.autoLoot )
@@ -421,9 +432,9 @@ function AJM:SettingsRefresh()
 	-- Set state.
 	AJM.settingsControl.checkBoxDismountWithTeam:SetDisabled( not AJM.db.mountWithTeam )
 	AJM.settingsControl.checkBoxDismountWithMaster:SetDisabled( not AJM.db.dismountWithTeam or not AJM.db.mountWithTeam )
-	AJM.settingsControl.checkBoxMountInRange:SetDisabled( not AJM.db.mountWithTeam )
+	--AJM.settingsControl.checkBoxMountInRange:SetDisabled( not AJM.db.mountWithTeam )
 	-- BETA TODO FIX FOR 8.0!
-	AJM.settingsControl.checkBoxMountWithTeam:SetDisabled( JambaPrivate.Core.isBetaBuild() )
+	--AJM.settingsControl.checkBoxMountWithTeam:SetDisabled( JambaPrivate.Core.isBetaBuild() )
 end
 
 -------------------------------------------------------------------------------------------------------------
@@ -533,75 +544,127 @@ local function CloseTaxiMapFrame()
 end
 
 -------------------------------------------------------------------------------------------------------------
--- JambaMount Functionality.
+-- Jamba-Mount Functionality.
 -------------------------------------------------------------------------------------------------------------
+-- Pre 8.0 used to give spall Name. --  UNIT_SPELLCAST_START - no longer provide spell name and rank.
+--AJM:UNIT_SPELLCAST_START(event, unitID, spell, rank, lineID, spellID, ...  )
 
-function AJM:UNIT_SPELLCAST_START(event, unitID, spell, rank, lineID, spellID, ...  )
-	--AJM:Print("Looking for Spells.", unitID, spellID, spell)
-	AJM.castingMount = nil
+function AJM:PLAYER_ENTERING_WORLD(event, ... )
+	if IsMounted() then	
+		local mountIDs = C_MountJournal.GetMountIDs()	
+		for i = 1, #mountIDs do
+			local creatureName, spellID, icon, active = C_MountJournal.GetMountInfoByID(mountIDs[i])
+			if active then
+				--AJM:Print("alreadyMounted", spellID )
+				AJM.isMounted = spellID
+			if JambaPrivate.Core.isBetaBuild() == false then
+				local spell = GetSpellInfo(spellID)
+				--AJM:Print("test", spell)
+				AJM.mountName = spell
+			end		
+				AJM:RegisterEvent("UNIT_AURA")
+			end
+		end
+	end
+end	
+
+function AJM:UNIT_SPELLCAST_START(event, ...  )
+	if JambaPrivate.Core.isBetaBuild() == true then
+		unitID, lineID, spellID =  ...
+	else
+		unitID, spell, rank, lineID, spellID = ...
+	end
+	--AJM:Print("Looking for Spells.", unitID, spellID)
 	if unitID == "player" then
 	local mountIDs = C_MountJournal.GetMountIDs()	
 		for i = 1, #mountIDs do
 			--local name , id, icon, active = C_MountJournal.GetMountInfoByID(i)
-			local creatureName,_,_,_,_,_,_,_,_,_,_,mountID = C_MountJournal.GetMountInfoByID(mountIDs[i])
-			--AJM:Print("Test", spell, creatureName)
-			if spell == creatureName then
+			local creatureName,mountSpellID,_,_,_,_,_,_,_,_,_,mountID = C_MountJournal.GetMountInfoByID(mountIDs[i])
+			--AJM:Print("Test", spellID, "vs", mountSpellID, "name", creatureName)
+			if spellID == mountSpellID then
 				--AJM:Print("SendtoTeam", "name", creatureName, "id", mountID)
 				if IsShiftKeyDown() == false then
-					AJM:JambaSendCommandToTeam( AJM.COMMAND_MOUNT_ME, creatureName, mountID )
-					AJM.castingMount = creatureName
-					break	
+					if AJM.responding == false then	
+						AJM:JambaSendCommandToTeam( AJM.COMMAND_MOUNT_ME, creatureName, mountID )
+						AJM.castingMount = spellID
+						break
+					end	
 				end	
 			end
 		end	
 	end
 end
 
-function AJM:UNIT_SPELLCAST_SUCCEEDED(event, unitID, spell, rank, lineID, spellID, ... )
-	if unitID ~= "player" then
-        return
-    end
-	--AJM:Print("Looking for Spells Done", spell, AJM.castingMount)
-	if spell == AJM.castingMount then
-		--AJM:Print("test", spell)
-		AJM.isMounted = spell
-		--AJM:Print("Mounted!", AJM.isMounted)
-		AJM:RegisterEvent("UNIT_AURA")
-	--else
-		-- SomeThing gone wrong! so going to cast a random mount!
-		--AJM:Print("This Mount is not supported!", spell)
-		--AJM:JambaSendCommandToTeam( AJM.COMMAND_MOUNT_ME, "Random", "0" )
+
+function AJM:UNIT_SPELLCAST_SUCCEEDED(event, ... )
+	if JambaPrivate.Core.isBetaBuild() == true then
+		unitID, lineID, spellID =  ...
+	else
+		unitID, spell, rank, lineID, spellID = ...
 	end
-	
+	if AJM.db.mountWithTeam == false  or AJM.castingMount == nil or unitID ~= "player" then
+		return
+	end
+	--AJM:Print("Looking for Spells Done", spellID, AJM.castingMount)
+	if spellID == AJM.castingMount then
+		--AJM:Print("Mounted!", AJM.isMounted)
+		AJM.isMounted = spellID
+		if JambaPrivate.Core.isBetaBuild() == false then
+			AJM.mountName = spell
+		end	
+		AJM:RegisterEvent("UNIT_AURA")
+	end
 end
+
 
 function AJM:UNIT_AURA(event, unitID, ... )
 	--AJM:Print("tester", unitID, AJM.isMounted)
 	if unitID ~= "player" or AJM.isMounted == nil or AJM.db.dismountWithTeam == false then
         return
     end
-	if not UnitBuff( unitID, AJM.isMounted) then
-		--AJM:Print("I have Dismounted - Send to team!")
-		if AJM.db.dismountWithMaster == true then
-			if JambaApi.IsCharacterTheMaster( AJM.characterName ) == true then
-				if IsShiftKeyDown() == false then	
-					--AJM:Print("test")
-					AJM:JambaSendCommandToTeam( AJM.COMMAND_MOUNT_DISMOUNT )
-					AJM:UnregisterEvent("UNIT_AURA")
-				end		
-			else	
-				--AJM:Print("test1")
-				return
+	--AJM:Print("auraTrack", unitID, AJM.isMounted, AJM.mountName )
+	if JambaPrivate.Core.isBetaBuild() == true then	
+		if not LibAuras:UnitAura(unitID, AJM.isMounted ) then 
+			--AJM:Print("I have Dismounted - Send to team!")
+			if AJM.db.dismountWithMaster == true then
+				if JambaApi.IsCharacterTheMaster( AJM.characterName ) == true then
+					if IsShiftKeyDown() == false then	
+						--AJM:Print("test")
+						AJM:JambaSendCommandToTeam( AJM.COMMAND_MOUNT_DISMOUNT )
+						AJM:UnregisterEvent("UNIT_AURA")
+					end		
+				end
+			else
+				AJM:JambaSendCommandToTeam( AJM.COMMAND_MOUNT_DISMOUNT )
+				AJM:UnregisterEvent("UNIT_AURA")		
 			end
-		else
-			AJM:JambaSendCommandToTeam( AJM.COMMAND_MOUNT_DISMOUNT )
-			AJM:UnregisterEvent("UNIT_AURA")
-		end		
+		end			
 	end
+	if JambaPrivate.Core.isBetaBuild() == false then
+		if AJM.mountName == nil then
+			return
+		end
+		if not UnitBuff(unitID, AJM.mountName) then 
+			--AJM:Print("I have Dismounted - Send to team! OLD")
+			if AJM.db.dismountWithMaster == true then
+				if JambaApi.IsCharacterTheMaster( AJM.characterName ) == true then
+					if IsShiftKeyDown() == false then	
+						--AJM:Print("test")
+						AJM:JambaSendCommandToTeam( AJM.COMMAND_MOUNT_DISMOUNT )
+						AJM:UnregisterEvent("UNIT_AURA")
+					end		
+				end
+			else
+				AJM:JambaSendCommandToTeam( AJM.COMMAND_MOUNT_DISMOUNT )
+				AJM:UnregisterEvent("UNIT_AURA")		
+			end
+		end	
+	end		
 end
 
 function AJM:TeamMount(characterName, name, mountID)
 	--AJM:Print("testTeamMount", characterName, name, mountID )
+	AJM.responding = true
 	--mount with team truned off.
 	if AJM.db.mountWithTeam == false then
 		return
@@ -650,9 +713,11 @@ function AJM:TeamMount(characterName, name, mountID)
 		--AJM:Print("test14550", mount, name )
 		if name == "Random" then  -- name doesn't seem to be set anywhere...
 			C_MountJournal.SummonByID(0)
+			AJM.responding = false
 		else 
 			--AJM:Print("test1054" )
 			C_MountJournal.SummonByID( mount )
+			AJM.responding = false
 		end
 		if IsMounted() == false then	
 			AJM:ScheduleTimer( "AmNotMounted", 2 )
@@ -797,7 +862,7 @@ function AJM:JambaOnCommandReceived( characterName, commandName, ... )
 		
 		if commandName == AJM.COMMAND_MOUNT_ME then
 			--AJM:Print("command")
-			AJM:TeamMount( characterName, ... ) 
+			AJM:TeamMount( characterName, ... )		
 		end
 		-- Dismount if mounted!
 		if commandName == AJM.COMMAND_MOUNT_DISMOUNT then
