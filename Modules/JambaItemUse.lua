@@ -65,17 +65,18 @@ BINDING_NAME_JAMBAITEMUSE20 = L["ITEM"]..L[" "]..L["20"]
 AJM.settings = {
 	profile = {
 		showItemUse = true,
-		showItemUseOnMasterOnly = true,
+		showItemUseOnMasterOnly = false,
 		hideItemUseInCombat = false,
+		showItemCount = true,
 		borderStyle = L["BLIZZARD_TOOLTIP"],
 		backgroundStyle = L["BLIZZARD_DIALOG_BACKGROUND"],
 		itemUseScale = 1,
 		itemUseTitleHeight = 3,
 		itemUseVerticalSpacing = 3,
 		itemUseHorizontalSpacing = 2,
-		autoAddQuestItemsToBar = true,
-		autoAddArtifactItemsToBar = true,
-		autoAddSatchelsItemsToBar = true,
+		autoAddQuestItemsToBar = false,
+		autoAddArtifactItemsToBar = false,
+		autoAddSatchelsItemsToBar = false,
 		hideClearButton = false,
 		itemBarsSynchronized = true,
 		numberOfItems = 10,
@@ -237,7 +238,7 @@ local function CreateJambaItemUseFrame()
 	frame:ClearAllPoints()
 	-- Clear Button
 		local updateButton = CreateFrame( "Button", "ButtonUpdate", frame, "UIPanelButtonTemplate" )
-		updateButton:SetScript( "OnClick", function() AJM:ClearButton() end )
+		updateButton:SetScript( "OnClick", function() AJM.ClearButton() end )
 		updateButton:SetPoint( "TOPRIGHT", frame, "TOPRIGHT", -4, -3 )
 		updateButton:SetHeight( 20 )
 		updateButton:SetWidth( 65 )
@@ -247,7 +248,7 @@ local function CreateJambaItemUseFrame()
 		ClearUpdateButton = updateButton
 	-- Sync Button	
 		local syncButton = CreateFrame( "Button", "ButtonSync", frame, "UIPanelButtonTemplate" )
-		syncButton:SetScript( "OnClick", function() AJM:SyncButton() end )
+		syncButton:SetScript( "OnClick", function() AJM.SyncButton() end )
 		syncButton:SetPoint( "TOPRIGHT", frame, "TOPRIGHT", -71, -3 )
 		syncButton:SetHeight( 20 )
 		syncButton:SetWidth( 65 )
@@ -366,8 +367,7 @@ function AJM:UpdateQuestItemsInBar()
 					if AJM:IsInInventory( itemLink ) == false then
 					--AJM:Print("NOT IN BAGS", itemLink)
 						AJM.db.itemsAdvanced[iterateItems] = nil	
-						AJM:JambaSendUpdate( iterateItems, "empty", nil )
-						--AJM:JambaSendSettings()						
+						AJM:JambaSendUpdate( iterateItems, "empty", nil )						
 					end
 				end	
 			end
@@ -552,6 +552,9 @@ function AJM:SyncButton()
 			table.insert( dataTable, data )
 	end
 	AJM:JambaSendCommandToTeam( AJM.COMMAND_ITEMUSE_SYNC, dataTable)
+	if AJM.db.showItemCount == true then
+		AJM:GetJambaItemCount()
+	end	
 end
 
 
@@ -744,6 +747,16 @@ local function SettingsCreateOptions( top )
 		L["ONLY_ON_MASTER"],
 		AJM.SettingsToggleShowItemUseOnlyOnMaster,
 		L["ONLY_ON_MASTER_HELP"]
+	)
+	movingTop = movingTop - checkBoxHeight - verticalSpacing
+	AJM.settingsControl.displayOptionsCheckBoxShowItemCount = JambaHelperSettings:CreateCheckBox( 
+		AJM.settingsControl, 
+		headingWidth, 
+		left,
+		movingTop, 
+		L["SHOW_ITEM_COUNT"],
+		AJM.SettingsToggleShowItemCount,
+		L["SHOW_ITEM_COUNT_HELP"]
 	)
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
 	AJM.settingsControl.displayOptionsCheckBoxItemBarsSynchronized = JambaHelperSettings:CreateCheckBox( 
@@ -948,6 +961,7 @@ function AJM:SettingsRefresh()
 	AJM.settingsControl.displayOptionsCheckBoxShowItemUse:SetValue( AJM.db.showItemUse )
 	AJM.settingsControl.displayOptionsCheckBoxShowItemUseOnlyOnMaster:SetValue( AJM.db.showItemUseOnMasterOnly )
 	AJM.settingsControl.displayOptionsCheckBoxHideItemUseInCombat:SetValue( AJM.db.hideItemUseInCombat )
+	AJM.settingsControl.displayOptionsCheckBoxShowItemCount:SetValue( AJM.db.showItemCount )
 	AJM.settingsControl.displayOptionsItemUseNumberOfItems:SetValue( AJM.db.numberOfItems )
 	AJM.settingsControl.displayOptionsItemUseNumberOfRows:SetValue( AJM.db.numberOfRows )
 	AJM.settingsControl.displayOptionsCheckBoxAutoAddQuestItem:SetValue( AJM.db.autoAddQuestItemsToBar )
@@ -968,6 +982,7 @@ function AJM:SettingsRefresh()
 	if not InCombatLockdown() then
 		AJM.settingsControl.displayOptionsCheckBoxShowItemUseOnlyOnMaster:SetDisabled( not AJM.db.showItemUse )
 		AJM.settingsControl.displayOptionsCheckBoxHideItemUseInCombat:SetDisabled( not AJM.db.showItemUse )
+		AJM.settingsControl.displayOptionsCheckBoxShowItemCount:SetDisabled( not AJM.db.showItemUse )
 		AJM.settingsControl.displayOptionsItemUseNumberOfItems:SetDisabled( not AJM.db.showItemUse )
 		AJM.settingsControl.displayOptionsItemUseNumberOfRows:SetDisabled( not AJM.db.showItemUse )
 		AJM.settingsControl.displayOptionsCheckBoxAutoAddQuestItem:SetDisabled( not AJM.db.showItemUse )
@@ -1008,6 +1023,11 @@ function AJM:SettingsToggleHideItemUseInCombat( event, checked )
 	AJM:SettingsRefresh()
 end
 
+function AJM:SettingsToggleShowItemCount( event, checked )
+	AJM.db.showItemCount = checked 
+	AJM:SettingsRefresh()
+end	
+	
 function AJM:SettingsToggleShowItemUseOnlyOnMaster( event, checked )
 	AJM.db.showItemUseOnMasterOnly = checked
 	AJM:SettingsRefresh()
@@ -1149,6 +1169,7 @@ function AJM:JambaOnSettingsReceived( characterName, settings )
 		AJM.db.showItemUse = settings.showItemUse
 		AJM.db.showItemUseOnMasterOnly = settings.showItemUseOnMasterOnly
 		AJM.db.hideItemUseInCombat = settings.hideItemUseInCombat
+		AJM.db.showItemCount = settings.showItemCount
 		AJM.db.borderStyle = settings.borderStyle
 		AJM.db.backgroundStyle = settings.backgroundStyle
 		AJM.db.itemUseScale = settings.itemUseScale
@@ -1219,7 +1240,7 @@ function AJM:BAG_UPDATE_DELAYED()
 	--	AJM:UpdateItemsInBar()
 	--	AJM:UpdateQuestItemsInBar()
 		-- ItemCount 
-		AJM:GetJambaItemCount()											  
+		AJM:GetJambaItemCount()
 	end
 end
 function AJM:QUEST_UPDATE()
@@ -1248,34 +1269,57 @@ function AJM:PLAYER_ENTERING_WORLD( event, ... )
 	AJM:ScheduleTimer( "GetJambaItemCount", 0.5 )	
 end		
 
+local function GetMaxItemCountFromItemID(itemID)
+	if itemID == nil then 
+		return 0 
+	end
+	if AJM.sharedInvData == nil then 
+		return 0
+	end	
+	local count = 0
+	for itemName, data in pairs( AJM.sharedInvData ) do
+		for id, itemData in pairs( data ) do
+			if itemID == itemData.item then
+				count = count + itemData.itemCount
+			end	
+		end	
+	end	
+	return count
+end
+
+
 function AJM:AddTooltipInfo( toolTip, itemID )
-	if AJM.db.showItemUse == false then
+	if AJM.db.showItemUse == false or AJM.db.showItemCount == false then
 		return
 	end
-
-	
-	
 	AJM:AddToTooltip( toolTip, itemID )
 	toolTip:Show()
 end
 
-function AJM:AddToTooltip(toolTip, itemID) 
-	if InCombatLockdown() then
-		return
-    end
-	toolTip:AddLine(" ")
-	toolTip:AddDoubleLine(L["TEAM_BAGS"], L["BAG_BANK"], 1,0.82,0,1,0.82,0)
-	for characterName, position in JambaApi.TeamList() do
-		local count, bankCount = AJM:GetItemCountFromItemID( characterName, itemID )
-		if count ~= nil then
-
-			toolTip:AddDoubleLine(Ambiguate(characterName, "none"), count..L[" "]..L["("]..bankCount..L[")"], 1,1,1,1,1,1)
+function AJM:AddToTooltip(toolTip, itemID)
+	local totalCount = 0
+	if itemID ~= nil then
+		local count = GetMaxItemCountFromItemID(itemID)
+		if count > 0 then 
+			toolTip:AddLine(" ")
+			toolTip:AddDoubleLine(L["TEAM_BAGS"], L["BAG_BANK"], 1,0.82,0,1,0.82,0)
+			for characterName, position in JambaApi.TeamList() do
+				local count, bankCount = AJM:GetItemCountFromItemID( characterName, itemID )
+				if count ~= nil then
+				toolTip:AddDoubleLine(Ambiguate(characterName, "none"), count..L[" "]..L["("]..bankCount..L[")"], 1,1,1,1,1,1)
+					totalCount = totalCount + count
+				end
+			end
 		end
-	end
+	end		
+	if totalCount > 1 then
+		toolTip:AddLine(" ")
+		toolTip:AddDoubleLine(L["TOTAL"], totalCount, 1,0.82,0,1,1,1,1)
+	end					
 end		
 
 function AJM:GetJambaItemCount()
-	if AJM.db.showItemUse == false then
+	if AJM.db.showItemUse == false or AJM.db.showItemCount == false then
 		return
 	end
 	local iteminfo = {}
@@ -1311,11 +1355,11 @@ function AJM:ReceiveItemCount( characterName, dataTable )
 		table.insert(AJM.sharedInvData[characterName..itemName], {name = characterName, item = data.itemID, itemCount = data.countBags, bankCount = data.countBank } )
 		end
 	end
-	LibActionButton:UpdateAllButtons()
+	LibActionButton:UpdateAllButtons()	
 end
 
 function AJM:GetItemCountFromItemID( characterName, itemID )
-	if AJM.db.showItemUse == false then
+	if AJM.db.showItemUse == false or AJM.db.showItemCount == false then
 		return
 	end
 	local count = nil 
@@ -1351,23 +1395,7 @@ function AJM:UPDATE_BINDINGS()
 	end
 end
 
-local function GetMaxItemCountFromItemID(itemID)
-	if itemID == nil then 
-		return 0 
-	end
-	if AJM.sharedInvData == nil then 
-		return 0
-	end	
-	local count = 0
-	for itemName, data in pairs( AJM.sharedInvData ) do
-		for id, itemData in pairs( data ) do
-			if itemID == itemData.item then
-				count = count + itemData.itemCount
-			end	
-		end	
-	end	
-	return count
-end
+
 
 function AJM:LibSharedMedia_Registered()
 end

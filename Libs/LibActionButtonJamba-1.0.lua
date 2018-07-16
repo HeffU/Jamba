@@ -27,9 +27,11 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+the file was edit for Jamba by Jennifer cally 2016-2018
+
 ]]
 local MAJOR_VERSION = "LibActionButtonJamba-1.0"
-local MINOR_VERSION = 71
+local MINOR_VERSION = 74
 
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub.") end
 local lib, oldversion = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
@@ -510,7 +512,6 @@ local function PickupAny(kind, target, detail, ...)
 		ClearCursor()
 		kind, target, detail = target, detail, ...
 	end
-
 	if kind == 'action' then
 		PickupAction(target)
 	elseif kind == 'item' then
@@ -701,7 +702,7 @@ function InitializeEventHandler()
 	lib.eventFrame:RegisterEvent("SPELL_UPDATE_COOLDOWN")
 	lib.eventFrame:RegisterEvent("SPELL_UPDATE_USABLE")
 	lib.eventFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
-	lib.eventFrame:RegisterEvent("BAG_UPDATE")
+	lib.eventFrame:RegisterEvent("BAG_UPDATE_DELAYED")
 
 	lib.eventFrame:RegisterEvent("LOSS_OF_CONTROL_ADDED")
 	lib.eventFrame:RegisterEvent("LOSS_OF_CONTROL_UPDATE")
@@ -838,7 +839,7 @@ function OnEvent(frame, event, arg1, ...)
 				Update(button)
 			end
 		end
-	elseif  event == "BAG_UPDATE" then
+	elseif  event == "BAG_UPDATE_DELAYED" then
 		for button in next, ActiveButtons do
 			if button._state_type == "item" then
 				Update(button)
@@ -975,19 +976,19 @@ local function getKeys(binding, keys)
 		if keys ~= "" then
 			keys = keys .. ", "
 		end
-		keys = keys .. GetBindingText(hotKey, "KEY_")
+		keys = keys .. GetBindingText(hotKey)
 	end
 	return keys
 end
 
 function Generic:GetBindings()
-	local keys, binding
+	local keys
 
 	if self.config.keyBoundTarget then
 		keys = getKeys(self.config.keyBoundTarget)
 	end
 
-	keys = getKeys("CLICK "..self:GetName()..":LeftButton")
+	keys = getKeys("CLICK "..self:GetName()..":LeftButton", keys)
 
 	return keys
 end
@@ -1039,7 +1040,6 @@ function lib:UpdateAllButtons()
 		end
 	end
 end	
-
 
 function Update(self)
 	if self:HasAction() then
@@ -1322,7 +1322,7 @@ function UpdateTooltip(self)
 	if (GetCVar("UberTooltips") == "1") then
 		--for i,n in pairs(GameTooltip) do print(i,n) end
 		--print("lib", GameTooltip, self)
-		GameTooltip_SetDefaultAnchor(GameTooltip, self)
+		GameTooltip_SetDefaultAnchor(GameTooltip, self);
 	else
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
 	end
@@ -1519,8 +1519,11 @@ Action.GetSpellId              = function(self)
 	if actionType == "spell" then
 		return id
 	elseif actionType == "macro" then
+		return (GetMacroSpell(id))					 
+	  --[[
 		local _, _, spellId = GetMacroSpell(id)
 		return spellId
+   ]]
 	end
 end
 Action.GetLossOfControlCooldown = function(self) return GetActionLossOfControlCooldown(self._state_action) end

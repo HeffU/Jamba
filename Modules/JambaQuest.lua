@@ -193,14 +193,13 @@ local function InitializePopupDialogs()
         button1 = L["YES_IAM_SURE"],
         button2 = NO,
         timeout = 0,
+		showAlert = 1,
 		whileDead = true,
 		hideOnEscape = true,
-       OnAccept = function()
+		OnAccept = function()
 			AJM:DoAbandonAllQuestsFromAllToons()
 		end,
-    }    
-
-
+    }
 end
 
 -------------------------------------------------------------------------------------------------------------

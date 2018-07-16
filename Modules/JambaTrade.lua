@@ -522,17 +522,17 @@ end
 function AJM:TRADE_SHOW( event, ... )	
 	--Keep for tradeing gold!
 	if AJM.db.adjustMoneyWithMasterOnTrade == true then
-		AJM:ScheduleTimer( "TradeShowAdjustMoneyWithMaster", 1 )
+		AJM:ScheduleTimer( "TradeShowAdjustMoneyWithMaster", 0.3 )
 	end	
 	-- do trade list with Gold!
 	if AJM.db.showJambaTradeWindow == true then
-		AJM:ScheduleTimer("TradeItemsFromList", 1 )
+		AJM:ScheduleTimer("TradeItemsFromList", 0.5 )
 	end
-	if AJM.db.tradeBoEItems == true and AJM.db.showJambaTradeWindow == true then
-		AJM:ScheduleTimer("TradeBoEItems", 1.5 )
+	if AJM.db.tradeBoEItems == true then
+		AJM:ScheduleTimer("TradeBoEItems", 1.0 )
 	end	
-	if AJM.db.tradeCRItems == true and AJM.db.showJambaTradeWindow == true then
-		AJM:ScheduleTimer("TradeCRItems", 1.8 )
+	if AJM.db.tradeCRItems == true then
+		AJM:ScheduleTimer("TradeCRItems", 1.5 )
 	end	
 end
 

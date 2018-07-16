@@ -62,10 +62,27 @@ JambaPrivate.SettingsFrame.Widget:AddChild( JambaPrivate.SettingsFrame.WidgetTre
 
 
 function AJM:OnEnable()
-
+	if AJM.db.showStartupMessage8000 then
+		StaticPopup_Show( "ALL_SETTINGS HAVE BEEN RESET" )
+	end
 end
 
 function AJM:OnDisable()
+end
+
+local function InitializePopupDialogs()
+	StaticPopupDialogs["ALL_SETTINGS HAVE BEEN RESET"] = {
+		text = L["ALL_SETTINGS_RESET"],
+		button1 = OKAY,
+		OnAccept = function()
+			AJM.db.showStartupMessage8000 = false
+		end,
+		showAlert = 1,
+		timeout = 0,
+		exclusive = 1,
+		hideOnEscape = 1,
+		whileDead = 1,	
+	}
 end
 
 local function JambaSettingsTreeSort( a, b )
@@ -177,6 +194,7 @@ JambaPrivate.SettingsFrame.Widget:Hide()
 -- Settings - the values to store and their defaults for the settings database.
 AJM.settings = {
 	profile = {
+	showStartupMessage8000 = true,
 	},
 }
 
@@ -463,6 +481,8 @@ end
 
 -- Initialize the addon.
 function AJM:OnInitialize()
+	-- Initialise the popup dialogs.
+	InitializePopupDialogs()
 	-- Tables to hold registered modules - lookups by name and by address.  
 	-- By name is used for communication between clients and by address for communication between addons on the same client.
 	AJM.registeredModulesByName = {}

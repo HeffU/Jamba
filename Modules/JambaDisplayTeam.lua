@@ -41,7 +41,7 @@ AJM.moduleOrder = 50
 AJM.settings = {
 	profile = {
 		showTeamList = true,
-		showTeamListOnMasterOnly = true,
+		showTeamListOnMasterOnly = false,
 		hideTeamListInCombat = false,
 		enableClique = false,
 		statusBarTexture = L["BLIZZARD"],
@@ -57,9 +57,9 @@ AJM.settings = {
 		barHorizontalSpacing = 2,
 		charactersPerRow = 1,
 		--Old code kept for Legacy Purpose
-		barsAreStackedVertically = true,
+		barsAreStackedVertically = false,
 		teamListHorizontal = true,
-		showListTitle = false,
+		showListTitle = true,
 		olnyShowInParty = false,
 		healthManaOutOfParty = false,
 		showCharacterPortrait = false,
@@ -77,13 +77,13 @@ AJM.settings = {
 		experienceStatusHeight = 15,
 		experienceStatusShowValues = false,
 		experienceStatusShowPercentage = true,		
-		showHealthStatus = true,
+		showHealthStatus = false,
 		showClassColors = false,
 		healthStatusWidth = 100,
 		healthStatusHeight = 25,
 		healthStatusShowValues = true,
 		healthStatusShowPercentage = true,		
-		showPowerStatus = true,
+		showPowerStatus = false,
 		powerStatusWidth = 100,
 		powerStatusHeight = 15,
 		powerStatusShowValues = true,
@@ -93,7 +93,7 @@ AJM.settings = {
 		comboStatusHeight = 10,
 		comboStatusShowValues = true,
 		comboStatusShowPercentage = true,		
-		showToolTipInfo = true,
+		showToolTipInfo = false,
 --		ShowEquippedOnly = false,
 		framePoint = "LEFT",
 		frameRelativePoint = "LEFT",
@@ -333,14 +333,12 @@ local function CreateJambaTeamListFrame()
 		tile = true, tileSize = 10, edgeSize = 10, 
 		insets = { left = 3, right = 3, top = 3, bottom = 3 }
 	} )
-
 	-- Create the title for the team list frame.
 	local titleName = frame:CreateFontString( "JambaDisplayTeamListWindowFrameTitleText", "OVERLAY", "GameFontNormal" )
 	titleName:SetPoint( "TOP", frame, "TOP", 0, -5 )
 	titleName:SetTextColor( 1.00, 1.00, 1.00 )
 	titleName:SetText( L["JAMBA_TEAM"] )
 	frame.titleName = titleName
-	
 	-- Set transparency of the the frame (and all its children).
 	frame:SetAlpha(AJM.db.frameAlpha)
 	

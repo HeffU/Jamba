@@ -47,7 +47,7 @@ AJM.settings = {
 		watcherFramePoint = "RIGHT",
 		watcherFrameRelativePoint = "RIGHT",
 		watcherFrameXOffset = 0,
-		watcherFrameYOffset = 150,
+		watcherFrameYOffset = 50,
 		watcherFrameAlpha = 1.0,
 		watcherFrameScale = 1.0,
 		borderStyle = L["BLIZZARD_TOOLTIP"],
@@ -539,7 +539,7 @@ function AJM:CreateQuestWatcherFrame()
 		tile = true, tileSize = 10, edgeSize = 10, 
 		insets = { left = 3, right = 3, top = 3, bottom = 3 }
 	} )
-	-- Create the title for the team list frame.
+	-- Create the title for the questWaster list frame.
     local titleButton = CreateFrame( "Button", "JambaQuestWatcherWindowFrameTitle", frame )
 	titleButton:SetPoint( "TOPLEFT", frame, "TOPLEFT", -5, -4 )
 	titleButton:SetWidth( AJM.db.watcherFrameWidth - 100 )
