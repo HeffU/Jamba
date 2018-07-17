@@ -23,7 +23,7 @@ L[": "] = true
 L["("] = true
 L[")"] = true
 L[" / "] = true
-L[" / "] = true
+L["/"] = true
 L["%"] = true
 L["N/A"] = true
 L["PUSH_SETTINGS"] = "Teile Einstellungen"
@@ -148,26 +148,23 @@ L["TEXT7"] = ""
 L["TEXT8"] = ""
 L["TEXT9"] = ""
 L["TEXT10"] = ""
-
 L["SPECIAL_THANKS"] = "Special Thanks:"
 L["THANKS1"] = "Michael Jafula Miller Untill 2015"
-L["THANKS2"] = ""
+L["THANKS2"] = "tk911 für die Deutsche Übersetzung"
 L["THANKS3"] = ""
-
 L["WEBSITES"] = "Websites"
-L["ME"] = "Current Project Manger Jenny (Ebony) Cally" 
+L["ME"] = "Current Project Manger Jennifer (Ebony) Cally" 
 L["ME_TWITTER"] = "https://twitter.com/Jenn_Ebony"
 L["D-B"] = "http://Dual-boxing.com"
 L["ISB"] = "http://IsBoxer.com"
 L["TEMP_WEBSITE1"] = ""
 L["TEMP_WEBSITE2"] = ""
 L["TEMP_WEBSITE3"] = ""
-
-
 L["COPYRIGHT"] = "Copyright (c) 2015-2018  Jennifer Cally"
 L["COPYRIGHTTWO"] = "Released Under License: The MIT License"
 L["FRAME_RESET"] = "Frame Reset"
-
+-- Msg 8000
+L["ALL_SETTINGS_RESET"] = "Willkommen zu Jamba \"Ebony's Edition\" für Patch 8.0.1 \nAlle Jamba Einstellungen wurden Zurückgesetzt!"
 --------------------------
 -- Communications Locale
 
@@ -304,6 +301,8 @@ L["SHOW_ITEM_BAR"] = "Zeige Gegenstands Anzeige an"
 L["SHOW_ITEM_BAR_HELP"] = "Zeigt die Gegenstands Anzeige an."
 L["CLEAR_ITEM_BAR"] = "Leere Gegenstands Anzeige"
 L["CLEAR_ITEM_BAR_HELP"] = "Leere die Gegenstands Anzeige(Entfernt alle Gegenstände)"
+L["CLEAR_BUTT"] = "Leeren"
+L["SYNC_BUTT"] = "Sync"
 L["TOOLTIP_SYNCHRONISE"] = "Synchronisiere die Gegenstands Anzeige"
 L["TOOLTIP_NOLONGER_IN_BAGS"] = "Entfernt Gegenstände die sich nicht länger in deiner Tasche befinden aus der Gegenstands Anzeige."
 L["NEW_QUEST_ITEM"] = "Neuer Gegenstand gefunden der eine Quest startet!"
@@ -312,8 +311,9 @@ L["SHOW_ITEM_BAR"] = "Zeige Gegenstands Anzeige"
 L["SHOW_ITEM_BAR_HELP"] = "Zeigt die Gegenstands Anzeige"
 L["ONLY_ON_MASTER"] = "Nur bei Meister"
 L["ONLY_ON_MASTER_HELP"] = "Zeigt die Gegenstands Anzeige nur beim Meister an."
+L["SHOW_ITEM_COUNT"] = "Zeige Gegenstandsanzahl an"
+L["SHOW_ITEM_COUNT_HELP"] = "Zeigt Gegenstandanzahl und Gegenstandanzahl Tooltips an."
 L["KEEP_BARS_SYNCHRONIZED"] = "Halte Gegenstands Anzeige bei Dienern Synchronisiert"
---TODO WORK OUT WHAT THIS DOES AGAIN!
 L["KEEP_BARS_SYNCHRONIZED_HELP"] = "Halte Gegenstands Anzeige bei Dienern Synchronisiert"
 L["ADD_QUEST_ITEMS_TO_BAR"] = "Füge Questgegenstände automatisch der Anzeige hinzu"
 L["ADD_QUEST_ITEMS_TO_BAR_HELP"] = "Fügt verwendbare Questgegenstände automatisch der Anzeige hinzu."
@@ -700,7 +700,7 @@ L["JUST_ME"] = "Nur bei Mir"
 L["ALL_TEAM"] = "Gesamten Team"
 L["TRACK_QUEST_ON_TEAM"] = "Willst du \"%s\" auf all deinen Toons verfolgen?"
 L["UNTRACK_QUEST_ON_TEAM"] = "Willst du \"%s\" auf all deinen Toons NICHT mehr verfolgen?"
-L["ABANDON_ALL_QUESTS"] = "Willst du ALLE deine Quests auf JEDEM Toon abbrechen? \nBist du Sicher?"
+L["ABANDON_ALL_QUESTS"] = "Willst du \"ALLE\" deine Quests auf JEDEM Toon abbrechen? \nBist du Sicher?"
 L["YES_IAM_SURE"] = "Ja, ich bin mir Sicher"
 L["INFORMATION"] = "Informationen"
 L["QUESTINFORMATIONONE"] = "Jamba-Quest behandelt alle Teammitgieder als wären sie Master."
