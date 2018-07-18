@@ -6,6 +6,10 @@ Jamba Version: v8.0.1-Release(0070)
 Game Version: 8.0.1
 Release Date: 18/7/2018
 
+## Core
+	- Team Set Isboxer Sync List As Default
+
+
 ## Jamba-Display
 	- Fixed a Lua Error on Login
 
