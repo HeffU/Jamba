@@ -1039,7 +1039,7 @@ StaticPopupDialogs["TEAMDEATH"] = {
 		self.button1:SetText(L["RELEASE_TEAM"])
 	end,
 	OnAccept = function(self)
-		AJM:Print("testRes")
+		--AJM:Print("testRes")
 		-- Do we need this???
 		--if not ( CannotBeResurrected() ) then
 		--	return 1
@@ -1173,16 +1173,16 @@ function AJM:doSoulStone()
 end
 
 function AJM:RESURRECT_REQUEST( event, name, ... )
-	AJM:Print("test Res From", name)
+	--AJM:Print("test Res From", name)
 	local canResurrect = false 
 	if AJM.db.autoAcceptResurrectRequest == true then
-		AJM:Print("test Res From", name)
+		--AJM:Print("test Res From", name)
 		canResurrect = true
 	end	
 	if AJM.db.autoAcceptResurrectRequestOnlyFromTeam == true then
 		for index, characterName in JambaApi.TeamListOrderedOnline() do
 			unit = Ambiguate( characterName, "none" )
-			AJM:Print("test", name, "vs", unit )
+			--AJM:Print("test", name, "vs", unit )
 			if unit == name then
 				canResurrect = true
 				break

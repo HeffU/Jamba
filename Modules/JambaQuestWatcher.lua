@@ -1981,7 +1981,6 @@ function AJM:QuestWatcherQuestListDrawLine( frame, iterateDisplayRows, type, inf
 			frame.questWatchList.rows[iterateDisplayRows].columns[2]:EnableMouse( false )	
 		end															   
 	else
-		local test = frame.questWatchList.rows[iterateDisplayRows].columns[1].textString:GetHeight()
 		frame.questWatchList.rows[iterateDisplayRows].columns[1].textString:SetText( padding..toggleDisplay..teamCount..information )
 		frame.questWatchList.rows[iterateDisplayRows].columns[2].textString:SetText( amount )
 		if type == "QUEST_HEADER" then
@@ -2016,7 +2015,6 @@ function AJM:QuestWatcherQuestListDrawLine( frame, iterateDisplayRows, type, inf
 	end
 	local questItemLink, questItemIcon = AJM:GetQuestItemFromQuestID(questID)
 	if questItemLink ~= nil and type == "QUEST_HEADER" then
-		--AJM:Print("test", information )
 		AJM:UpdateQuestItemButton( iterateDisplayRows, questItemLink )
 		
 	end
@@ -2274,7 +2272,7 @@ function JambaQuestMapQuestOptionsDropDown_Initialize(self)
 end
 
 function AJM:QuestMapQuestOptions_ToggleTrackQuest(questID, questText)
-	AJM:Print("test", questID, questText)
+	--AJM:Print("test", questID, questText)
 	JambaApi.JambaApiUnTrackQuest( questID, questText )
 end
 

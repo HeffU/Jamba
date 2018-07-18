@@ -774,6 +774,8 @@ function AJM:HideJambaTeamStatusBar( characterName )
 		AJM:CreateJambaTeamStatusBar( characterName, parentFrame )
 		characterStatusBar = AJM.characterStatusBar[characterName]
 	end
+	if characterStatusBar ~= nil then
+	
 	-- Hide the bars.
 	characterStatusBar["portraitButton"]:Hide()
 	characterStatusBar["portraitButtonClick"]:Hide()
@@ -794,6 +796,7 @@ function AJM:HideJambaTeamStatusBar( characterName )
 	characterStatusBar["powerBarClick"]:Hide()
 	characterStatusBar["comboBar"]:Hide()
 	characterStatusBar["comboBarClick"]:Hide()
+	end
 end	
 
 
