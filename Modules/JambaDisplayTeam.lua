@@ -514,7 +514,7 @@ function AJM:CreateJambaTeamStatusBar( characterName, parentFrame )
 	characterStatusBar["portraitButtonClick"] = portraitButtonClick
 	-- Set the follow bar.
 	local followName = AJM.globalFramePrefix.."FollowBar"
-	local followBar = CreateFrame( "StatusBar", followName, parentFrame, "TextStatusBar,SecureActionButtonTemplate" )
+	local followBar = CreateFrame( "StatusBar", followName, parentFrame) --, "TextStatusBar,SecureActionButtonTemplate" )
 	followBar.backgroundTexture = followBar:CreateTexture( followName.."BackgroundTexture", "ARTWORK" )
 	followBar.backgroundTexture:SetColorTexture( 0.58, 0.0, 0.55, 0.15 )
 	followBar:SetStatusBarTexture( statusBarTexture )
@@ -648,7 +648,7 @@ function AJM:CreateJambaTeamStatusBar( characterName, parentFrame )
 	-- Set the health bar.
 	
 	local healthName = AJM.globalFramePrefix.."HealthBar"
-	local healthBar = CreateFrame( "StatusBar", healthName, parentFrame, "TextStatusBar,SecureActionButtonTemplate" )
+	local healthBar = CreateFrame( "StatusBar", healthName, parentFrame, "TextStatusBar","SecureActionButtonTemplate" )
 	healthBar.backgroundTexture = healthBar:CreateTexture( healthName.."BackgroundTexture", "ARTWORK" )
 	healthBar.backgroundTexture:SetColorTexture( 0.58, 0.0, 0.55, 0.15 )
 	healthBar:SetStatusBarTexture( statusBarTexture )
@@ -661,7 +661,7 @@ function AJM:CreateJambaTeamStatusBar( characterName, parentFrame )
 
 	
 	local healthIncomingName = AJM.globalFramePrefix.."HealthIncomingBar"
-	local healthIncomingBar = CreateFrame( "StatusBar", healthIncomingName, parentFrame, "TextStatusBar,SecureActionButtonTemplate" )
+	local healthIncomingBar = CreateFrame( "StatusBar", healthIncomingName, parentFrame, "TextStatusBar","SecureActionButtonTemplate" )
 	healthIncomingBar.backgroundTexture = healthIncomingBar:CreateTexture( healthIncomingName.."BackgroundTexture", "ARTWORK" )
 	healthIncomingBar.backgroundTexture:SetColorTexture( 0.58, 0.0, 0.55, 0.15 )
 	healthIncomingBar:SetStatusBarTexture( statusBarTexture )
@@ -693,7 +693,7 @@ function AJM:CreateJambaTeamStatusBar( characterName, parentFrame )
 	
 	-- Set the power bar.
 	local powerName = AJM.globalFramePrefix.."PowerBar"
-	local powerBar = CreateFrame( "StatusBar", powerName, parentFrame, "TextStatusBar,SecureActionButtonTemplate" )
+	local powerBar = CreateFrame( "StatusBar", powerName, parentFrame, "TextStatusBar","SecureActionButtonTemplate" )
 	powerBar.backgroundTexture = powerBar:CreateTexture( powerName.."BackgroundTexture", "ARTWORK" )
 	powerBar.backgroundTexture:SetColorTexture( 0.58, 0.0, 0.55, 0.15 )
 	powerBar:SetStatusBarTexture( statusBarTexture )
@@ -718,7 +718,7 @@ function AJM:CreateJambaTeamStatusBar( characterName, parentFrame )
 	AJM:UpdatePowerStatus( characterName, nil, nil, nil )
 	-- Set the Combo Points bar.
 	local comboName = AJM.globalFramePrefix.."ComboBar"
-	local comboBar = CreateFrame( "StatusBar", comboName, parentFrame, "TextStatusBar,SecureActionButtonTemplate" )
+	local comboBar = CreateFrame( "StatusBar", comboName, parentFrame, "TextStatusBar","SecureActionButtonTemplate" )
 	comboBar.backgroundTexture = comboBar:CreateTexture( comboName.."BackgroundTexture", "ARTWORK" )
 	comboBar.backgroundTexture:SetColorTexture( 0.58, 0.0, 0.55, 0.15 )
 	comboBar:SetStatusBarTexture( statusBarTexture )
@@ -747,7 +747,7 @@ function AJM:CreateJambaTeamStatusBar( characterName, parentFrame )
 	--TODO there got to be a better way to doing this for sure but right now i can not be assed to do this for now you need to reload the UI when turning off and on clique support. 
 	ClickCastFrames = ClickCastFrames or {}
 	if AJM.db.enableClique == true then
---		ClickCastFrames[portraitButtonClick] = true
+		ClickCastFrames[portraitButtonClick] = true
 		ClickCastFrames[followBarClick] = true
 		ClickCastFrames[experienceBarClick] = true
 		ClickCastFrames[reputationBarClick] = true
@@ -755,7 +755,7 @@ function AJM:CreateJambaTeamStatusBar( characterName, parentFrame )
 		ClickCastFrames[powerBarClick] = true
 		ClickCastFrames[comboBarClick] = true
 	else
---		portraitButtonClick:SetAttribute( "type1", "target")
+		portraitButtonClick:SetAttribute( "type1", "target")
 		followBarClick:SetAttribute( "type1", "target")
 		experienceBarClick:SetAttribute( "type1", "target")
 		reputationBarClick:SetAttribute( "type1", "target")
@@ -774,8 +774,7 @@ function AJM:HideJambaTeamStatusBar( characterName )
 		AJM:CreateJambaTeamStatusBar( characterName, parentFrame )
 		characterStatusBar = AJM.characterStatusBar[characterName]
 	end
-	if characterStatusBar ~= nil then
-	
+	--if characterStatusBar ~= nil then
 	-- Hide the bars.
 	characterStatusBar["portraitButton"]:Hide()
 	characterStatusBar["portraitButtonClick"]:Hide()
@@ -796,7 +795,7 @@ function AJM:HideJambaTeamStatusBar( characterName )
 	characterStatusBar["powerBarClick"]:Hide()
 	characterStatusBar["comboBar"]:Hide()
 	characterStatusBar["comboBarClick"]:Hide()
-	end
+	--end
 end	
 
 
