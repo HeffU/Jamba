@@ -119,7 +119,7 @@ function AJM:OnInitialize()
 	AJM:JambaModuleInitialize( AJM.settingsControl.widgetSettings.frame )
 	-- Populate the settings.
 	AJM:SettingsRefresh()
-	AJM:DisableAutoLoot()	
+	--AJM:DisableAutoLoot()	
 end
 
 -- Called when the addon is enabled.
@@ -743,7 +743,7 @@ function AJM:LOOT_READY( event, ... )
 end
 
 function AJM:doLoot( tries )
-	AJM:DisableAutoLoot()
+	--AJM:DisableAutoLoot()
 	if tries == nil then
 		tries = 0
 	end

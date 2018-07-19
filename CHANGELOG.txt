@@ -2,7 +2,18 @@
 ChangeLogs:
 ---------------------------
 
-Jamba Version: v8.0.1-Release(0070)
+Jamba Version: v8.0.1-Release(0072)
+Game Version: 8.0.1
+Release Date: 18/7/2018
+---------------------------
+
+## Jamba-Interaction
+	-- Should No longer Trun off blizzard AutoLoot.
+
+
+---------------------------
+
+Jamba Version: v8.0.1-Release(0071)
 Game Version: 8.0.1
 Release Date: 18/7/2018
 
