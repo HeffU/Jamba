@@ -2,9 +2,22 @@
 ChangeLogs:
 ---------------------------
 
+Jamba Version: v8.0.1-Release(0073)
+Game Version: 8.0.1
+Release Date: 20/7/2018
+
+## Jamba-Guild
+	- Fixed A Disaply Bug With Not Dispalying the Amount To Keep On Toon
+
+## Jamba-Message
+	- We Should have Jamba Raid Warning Back! YAY!!!
+
+	
+---------------------------
+
 Jamba Version: v8.0.1-Release(0072)
 Game Version: 8.0.1
-Release Date: 18/7/2018
+Release Date: 19/7/2018
 ---------------------------
 
 ## Jamba-Interaction

@@ -44,9 +44,7 @@ AJM.settings = {
 		GuildCRItems = false,
 		autoGuildItemsList = {},
 		adjustMoneyWithGuildBank = false,
-		goldAmountToKeepOnToon = 200,
-		adjustMoneyWithMasterOnGuild = false,
-		goldAmountToKeepOnToonGuild = 200,
+		goldAmountToKeepOnToon = 250,
 	},
 }
 
@@ -317,7 +315,8 @@ function AJM:SettingsCreateGuild( top )
 		L["GB_GOLD_HELP"]
 	)
 	movingTop = movingTop - checkBoxHeight
-	AJM.settingsControl.editBoxGoldAmountToLeaveOnToon = JambaHelperSettings:CreateEditBox( AJM.settingsControl,
+	AJM.settingsControl.editBoxGoldAmountToLeaveOnToon = JambaHelperSettings:CreateEditBox( 
+		AJM.settingsControl,
 		headingWidth,
 		left,
 		movingTop,
@@ -469,14 +468,6 @@ function AJM:EditBoxChangedGoldAmountToLeaveOnToon( event, text )
 	AJM:SettingsRefresh()
 end
 
-function AJM:EditBoxChangedGoldAmountToLeaveOnToonGuild( event, text )
-	AJM.db.goldAmountToKeepOnToonGuild = tonumber( text )
-	if AJM.db.goldAmountToKeepOnToonGuild == nil then
-		AJM.db.goldAmountToKeepOnToonGuild = 0
-	end
-	AJM:SettingsRefresh()
-end
-
 -- Settings received.
 function AJM:JambaOnSettingsReceived( characterName, settings )	
 	if characterName ~= AJM.characterName then
@@ -488,8 +479,6 @@ function AJM:JambaOnSettingsReceived( characterName, settings )
 		AJM.db.autoGuildItemsList = JambaUtilities:CopyTable( settings.autoGuildItemsList )
 		AJM.db.adjustMoneyWithGuildBank = settings.adjustMoneyWithGuildBank
 		AJM.db.goldAmountToKeepOnToon = settings.goldAmountToKeepOnToon
-		AJM.db.adjustMoneyWithMasterOnGuild = settings.adjustMoneyWithMasterOnGuild
-		AJM.db.goldAmountToKeepOnToonGuild = settings.goldAmountToKeepOnToonGuild
 		-- Refresh the settings.
 		AJM:SettingsRefresh()
 		-- Tell the player.
@@ -506,10 +495,11 @@ end
 
 function AJM:SettingsRefresh()
 	AJM.settingsControl.checkBoxShowJambaGuildWindow:SetValue( AJM.db.showJambaGuildWindow )
---	AJM.settingsControl.checkBoxGuildBoEItems:SetValue( AJM.db.GuildBoEItems)
---	AJM.settingsControl.checkBoxGuildCRItems:SetValue( AJM.db.GuildCRItems)
+--	AJM.settingsControl.checkBoxGuildBoEItems:SetValue( AJM.db.GuildBoEItems )
+--	AJM.settingsControl.checkBoxGuildCRItems:SetValue( AJM.db.GuildCRItems )
 	AJM.settingsControl.dropdownMessageArea:SetValue( AJM.db.messageArea )
 	AJM.settingsControl.checkBoxAdjustMoneyOnToonViaGuildBank:SetValue( AJM.db.adjustMoneyWithGuildBank )
+	AJM.settingsControl.editBoxGoldAmountToLeaveOnToon:SetText( tostring( AJM.db.goldAmountToKeepOnToon ) )
 	AJM.settingsControl.editBoxGoldAmountToLeaveOnToon:SetDisabled( not AJM.db.adjustMoneyWithGuildBank )
 	AJM.settingsControl.GuildItemsEditBoxGuildItem:SetDisabled( not AJM.db.showJambaGuildWindow )
 	AJM.settingsControl.GuildItemsEditBoxGuildTag:SetDisabled( not AJM.db.showJambaGuildWindow )	
