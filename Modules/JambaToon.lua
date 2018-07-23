@@ -1501,8 +1501,10 @@ function AJM:LOSS_OF_CONTROL_ADDED( event, ... )
 	if AJM.db.warnCC == true then
 		local eventIndex = C_LossOfControl.GetNumEvents()
 		if eventIndex > 0 then
-		local locType, spellID, text, iconTexture, startTime, timeRemaining, duration, lockoutSchool, priority, displayType = C_LossOfControl.GetEventInfo(eventIndex)	
-			AJM:JambaSendMessageToTeam( AJM.db.warningArea, AJM.db.CcMessage..L[" "]..text, false )
+			local locType, spellID, text, iconTexture, startTime, timeRemaining, duration, lockoutSchool, priority, displayType = C_LossOfControl.GetEventInfo(eventIndex)	
+			if JambaApi.IsCharacterTheMaster( AJM.characterName ) == false then
+				AJM:JambaSendMessageToTeam( AJM.db.warningArea, AJM.db.CcMessage..L[" "]..text, false )
+			end
 		end
 	end
 end

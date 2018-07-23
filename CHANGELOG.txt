@@ -2,6 +2,26 @@
 ChangeLogs:
 ---------------------------
 
+Jamba Version: v8.0.1-Release(0074)
+Game Version: 8.0.1
+Release Date: 20/7/2018
+
+
+## Jamba-Toon
+	- Should notlonger show CC warning of it self on master character
+
+
+
+
+
+
+
+
+
+
+
+---------------------------
+
 Jamba Version: v8.0.1-Release(0073)
 Game Version: 8.0.1
 Release Date: 20/7/2018
