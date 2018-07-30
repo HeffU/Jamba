@@ -635,8 +635,10 @@ function AJM:UNIT_AURA(event, unitID, ... )
 					end		
 				end
 			else
-				AJM:JambaSendCommandToTeam( AJM.COMMAND_MOUNT_DISMOUNT )
-				AJM:UnregisterEvent("UNIT_AURA")		
+				if IsShiftKeyDown() == false then	
+					AJM:JambaSendCommandToTeam( AJM.COMMAND_MOUNT_DISMOUNT )
+					AJM:UnregisterEvent("UNIT_AURA")
+				end		
 			end
 		end			
 	end
@@ -655,8 +657,10 @@ function AJM:UNIT_AURA(event, unitID, ... )
 					end		
 				end
 			else
-				AJM:JambaSendCommandToTeam( AJM.COMMAND_MOUNT_DISMOUNT )
-				AJM:UnregisterEvent("UNIT_AURA")		
+				if IsShiftKeyDown() == false then	
+					AJM:JambaSendCommandToTeam( AJM.COMMAND_MOUNT_DISMOUNT )
+					AJM:UnregisterEvent("UNIT_AURA")
+				end	
 			end
 		end	
 	end		

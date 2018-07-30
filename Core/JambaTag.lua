@@ -309,8 +309,8 @@ local function GroupList()
 end	
 
 -- Does the Group list have this tag?
-local function DoesGroupExist( group )
-	local tag = JambaUtilities:Lowercase(group)
+local function DoesGroupExist( tag )
+	--local tag = JambaUtilities:Lowercase(group)
 	local haveTag = false
 	for index, findTag in ipairs( AJM.db.groupList ) do
 		--AJM:Print("find", findTag, index )
@@ -568,14 +568,13 @@ function AJM:AddTagGUI( group )
 		-- Cannot add a tag that already exists.
 		if DoesGroupExist( tag ) == false then
 			-- Add tag, resort and display.
-			AddGroup( group ) 
+			AddGroup( tag ) 
 			AJM:SettingsGroupListScrollRefresh()	
 		end
 	end
 end
 
 function AJM:RemoveTagGUI()
-	--local tag = GetTagAtPosition( AJM.settingsControl.groupListHighlightRow )
 	local tag = GetGroupAtPosition( AJM.settingsControl.groupListHighlightRow )
 	-- Cannot remove a system tag.
 	if IsASystemGroup( tag ) == false then

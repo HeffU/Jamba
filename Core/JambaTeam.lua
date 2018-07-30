@@ -1035,6 +1035,7 @@ function AJM:CommandIAmMaster( info, parameters )
 	if tag ~= nil and tag:trim() ~= "" then 
 		AJM:JambaSendCommandToTeam( AJM.COMMAND_SET_MASTER, target, tag )
 	else
+		AJM:JambaSendCommandToTeam( AJM.COMMAND_SET_MASTER, target, "all" )
 		SetMaster( target )
 	end
 end
@@ -1044,6 +1045,7 @@ function AJM:CommandSetMaster( info, parameters )
 	if tag ~= nil and tag:trim() ~= "" then 
 		AJM:JambaSendCommandToTeam( AJM.COMMAND_SET_MASTER, target, tag )
 	else
+		AJM:JambaSendCommandToTeam( AJM.COMMAND_SET_MASTER, target, "all" )
 		SetMaster( target )
 	end
 end
@@ -1353,6 +1355,7 @@ local function LeaveTheParty()
 end
 
 function AJM:OnMasterChange( message, characterName )
+	--AJM:Print("test", message, characterName)
 	local playerName = AJM.characterName
 	if AJM.db.masterChangePromoteLeader == true then
 		if IsInGroup( "player" ) and UnitIsGroupLeader( "player" ) == true and GetMasterName() ~= playerName then
@@ -1783,6 +1786,7 @@ end
 
 function AJM:SettingsSetMasterClick( event )
 	local characterName = GetCharacterNameAtOrderPosition( AJM.settingsControl.teamListHighlightRow )
+	AJM:JambaSendCommandToTeam( AJM.COMMAND_SET_MASTER, characterName, "all" )
 	SetMaster( characterName )
 	AJM:SettingsTeamListScrollRefresh()
 end

@@ -936,7 +936,7 @@ function AJM:DoMerchantSellOtherItems()
 						-- Does it match the item to sell?					
 						if JambaUtilities:DoItemLinksContainTheSameItem( bagItemLink, itemInformation.link ) then
 							-- Yes, sell this item.
-							if 	hasNoValue == false then	
+							if hasNoValue == false then	
 								if MerchantFrame:IsVisible() == true then	
 									UseContainerItem( bag, slot ) 
 								end
