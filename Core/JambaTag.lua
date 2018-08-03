@@ -309,8 +309,8 @@ local function GroupList()
 end	
 
 -- Does the Group list have this tag?
-local function DoesGroupExist( tag )
-	--local tag = JambaUtilities:Lowercase(group)
+local function DoesGroupExist( group )
+	local tag = JambaUtilities:Lowercase(group)
 	local haveTag = false
 	for index, findTag in ipairs( AJM.db.groupList ) do
 		--AJM:Print("find", findTag, index )
@@ -409,7 +409,8 @@ local function TeamGroupList()
 	return AJM.db.groupList
 end
 
-local function IsCharacterInGroup( characterName, tag )
+local function IsCharacterInGroup( characterName, group )
+	local tag = JambaUtilities:Lowercase(group)
 	local DoesCharacterHaveTag = false
 	for name, tagList in pairs( AJM.db.tagList ) do
 		if characterName == name then

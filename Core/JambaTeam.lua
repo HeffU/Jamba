@@ -1225,7 +1225,7 @@ function AJM:InviteTeamToParty( info, tag )
 		tag = "all"
 	end
 	if JambaApi.DoesGroupExist(tag) == true then
-		if JambaPrivate.Tag.DoesCharacterHaveTag( AJM.characterName, tag ) == false then
+		if JambaApi.IsCharacterInGroup( AJM.characterName, tag ) == false then
 			--AJM:Print("IDONOTHAVETAG", tag)
 			for index, characterName in TeamListOrderedOnline() do
 				--AJM:Print("NextChartohavetag", tag, characterName )
