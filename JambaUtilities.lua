@@ -67,11 +67,6 @@ function JambaUtilities:AddRealmToNameIfMissing( name )
 	return fullName
 end
 
---if not string.find(name, "-") then
---	local _, realm = UnitFullName("player")
---	name = name.."-"..realm
---end
-
 -- Capitalise the name.	
 function JambaUtilities:Capitalise( name )
     if name ~= nil then

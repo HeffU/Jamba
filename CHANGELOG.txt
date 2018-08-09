@@ -2,6 +2,21 @@
 ChangeLogs:
 ---------------------------
 
+Jamba Version: v8.0.1-Release(0077)
+Game Version: 8.0.1
+Release Date: 09/8/2018
+
+## Jamba-Team 
+	-- IsboxerSync 
+		- Fixed a bug in (Isboxer Sync) That was Removing Team Members "Randomly" 
+		- Developer Note: Am so sorry for the players i did not say was a jamba problem (it kinda was not) as this was a tricky bug to track down! -jen
+	--Naming
+		-Add @Target/@Mouseover Are Now Working Again *BUT WITHOUT "@"
+		-Using Target Or Mouseover Will Add Your Current Target Again
+		-Can No longer Have dumb case sensitive names EG:( TeStMyNameSuCKS) As Warcraft Does Not Support This Naming!
+	
+---------------------------
+
 Jamba Version: v8.0.1-Release(0076)
 Game Version: 8.0.1
 Release Date: 3/8/2018

@@ -58,6 +58,7 @@ AJM.settings = {
 		inviteSetAllAssistant = false,
 
 		masterChangeClickToMove = false,
+		testHaveRun = false, 
 	},
 }
 
@@ -643,17 +644,6 @@ local function FullTeamList()
 	return pairs( fullTeamList )
 end	
 
-
---[[
-local function Offline()
-	return pairs( AJM.db.characterOnline )
-end
-
-local function characterClass()
-	return pairs( AJM.db.characterClass )
-end
-
-
 local function setClass()
 	for characterName, position in pairs( AJM.db.newTeamList ) do
 	local class, classFileName, classIndex = UnitClass( Ambiguate(characterName, "none") )
@@ -663,7 +653,6 @@ local function setClass()
 		end
 	end	
 end
-]]
 
 local function GetClass( characterName )
 	local class = nil
@@ -761,9 +750,18 @@ local function SetMaster( master )
 end
 
 -- Add a member to the member list.
-local function AddMember( characterName, class )
+local function AddMember( importName, class )
 	local name = nil
-	if characterName == "@Target" then
+	local singleName, singleRealm = strsplit( "-" , importName, 2 )
+	local characterName = nil
+	local name = JambaUtilities:Capitalise( singleName )
+	local realm = JambaUtilities:Capitalise( singleRealm )
+	if realm ~= nil then
+		characterName = name.."-"..realm
+	else
+		characterName = name
+	end	
+	if characterName == "Target" then
 		local UnitIsPlayer = UnitIsPlayer("target")
 		if UnitIsPlayer == true then
 			local unitName = GetUnitName("target", true)
@@ -773,7 +771,7 @@ local function AddMember( characterName, class )
 			AJM:Print(L["TEAM_NO_TARGET"])
 			return
 		end	
-	elseif characterName == "@Mouseover"  then
+	elseif characterName == "Mouseover"  then
 		local UnitIsPlayer = UnitIsPlayer("mouseover")
 		if UnitIsPlayer == true then
 			local unitName = GetUnitName("mouseover", true)
@@ -817,11 +815,8 @@ local function AddMember( characterName, class )
 	end	
 end
 
-
-
 -- Add all party/raid members to the member list. does not worl cross rwalm todo
 function AJM:AddPartyMembers()
-	--local numberPartyMembers = GetNumSubgroupMembers()
 	local numberPartyMembers = GetNumGroupMembers()
 	for iteratePartyMembers = numberPartyMembers, 1, -1 do
 		--AJM:Print("party/raid", numberPartyMembers, iteratePartyMembers)
@@ -859,19 +854,17 @@ end
 function AJM:AddMemberGUI( value )
 	AddMember( value )
 	AJM:SettingsTeamListScrollRefresh()
-	--AJM:SettingsGroupListScrollRefresh()
 end
 
 -- Add member from the command line.
 function AJM:AddMemberCommand( info, parameters )
+	local characterName = JambaUtilities:Capitalise(parameters)
 	-- Jamba-EE we No-longer remove character's from a team list when isboxer set's up the team we sync!
 	if info == nil then
 		--AJM:Print("isboxerContralRemove", parameters )
-		AJM.IsboxerSyncList[parameters] = "add"
+		AJM.IsboxerSyncList[characterName] = "add"
 		return
-	end	
-	--AJM:Print("testremove", info, parameters )
-	local characterName = parameters
+	end
 	-- Add the character.
 	AddMember( characterName )
 end
@@ -927,12 +920,6 @@ local function TeamListSwapCharacterPositions( position1, position2 )
 			end
 		end
 	end
-	
-	
-	
-	-- Swap the positions.
-	--AJM.db.teamList[character1] = position2
-	--AJM.db.teamList[character2] = position1
 end
 
 -- Makes sure that AJM character is a team member.  Enables if previously not a member.
@@ -958,12 +945,20 @@ local function ConfirmThereIsAMaster()
 end
 
 -- Remove a member from the member list.
-local function RemoveMember( characterName )
+local function RemoveMember( importName )
+	local singleName, singleRealm = strsplit( "-" , importName, 2 )
+	local characterName = nil
+	local name = JambaUtilities:Capitalise( singleName )
+	local realm = JambaUtilities:Capitalise( singleRealm )
+	if realm ~= nil then
+		characterName = name.."-"..realm
+	else
+		characterName = name
+	end
 	-- Is character in team?
 	if IsCharacterInTeam( characterName ) == true and characterName ~= AJM.characterName then
 		-- Remove character from list.
-		local characterPosition = JambaApi.GetPositionForCharacterName( characterName )
-		AJM.db.newTeamList[characterName] = nil
+		local characterPosition = JambaApi.GetPositionForCharacterName( characterName )		
 		-- If any character had an order greater than this character's order, then shift their order down by one.
 		for name, position in JambaApi.TeamList() do	
 			if position > characterPosition then
@@ -985,6 +980,7 @@ local function RemoveMember( characterName )
 		-- Refresh the settings.
 		AJM:SettingsRefresh()
 		-- Resets to Top of list!
+		AJM.db.newTeamList[characterName] = nil
 		AJM:SettingsTeamListRowClick( 1, 1 )
 	else
 		AJM:Print("[PH] CAN NOT REMOVE SELF")
@@ -1003,14 +999,13 @@ end
 
 -- Remove member from the command line.
 function AJM:RemoveMemberCommand( info, parameters )
+	local characterName = JambaUtilities:Capitalise(parameters)
 	-- Jamba-EE we No-longer remove character's from a team list when isboxer set's up the team we sync!
 	if info == nil then
-		--AJM:Print("isboxerContralAdd", parameters )
-		AJM.IsboxerSyncList[parameters] = "remove"
+		AJM.IsboxerSyncList[characterName] = "remove"
 		return
 	end		
 	--AJM:Print("testremove", info, parameters )
-	local characterName = parameters
 	-- Wow names are at least two characters.
 	if characterName ~= nil and characterName:trim() ~= "" and characterName:len() > 1 then
 		-- Remove the character.
@@ -1056,22 +1051,30 @@ function AJM:ReceiveCommandSetMaster( target, tag )
 	end
 end
 
--- Test IsboxerContral EbonyTest
+-- Test Isboxer Contral EbonyTest
 
 function AJM:IsboxerSyncTeamList()
 	if AJM.db.isboxerSync == true and IsAddOnLoaded("Isboxer" ) == true then
+		local JambaVersion = GetAddOnMetadata("JAMBA", "version")
+		if JambaVersion == "v8.0.1-Relese(0077)" then
+			if AJM.db.testHaveRun == false then
+				AJM:Print("Team List Cleared To Fix Jamba Bug #13")
+				JambaUtilities:ClearTable( AJM.db.newTeamList )
+				AJM.db.testHaveRun = true
+			end	
+		end
 		for characterName, teamStatus in pairs( AJM.IsboxerSyncList ) do
 			--AJM:Print("syncList", characterName, teamStatus )
-			if IsCharacterInTeam( characterName ) == true and characterName ~= AJM.characterName then
-				if teamStatus == "remove" then 
+			if teamStatus == "remove" then 
+				if IsCharacterInTeam( characterName ) == true and (characterName ~= AJM.characterName ) then	
 					--AJM:Print("memberNoLongerInIsboxerTeamDelete", characterName, teamStatus )
 					RemoveMember( characterName )
-				end
-			else
-				if teamStatus == "add" and characterName ~= AJM.characterName then 
-				--AJM:Print("Isboxer-AddMember", characterName, teamStatus )
-				AddMember( characterName )
-				end
+				end	
+			elseif teamStatus == "add" and characterName ~= AJM.characterName then
+				if IsCharacterInTeam( characterName ) == false then
+					--AJM:Print("Isboxer-AddMember", characterName, teamStatus )
+					AddMember( characterName )
+				end	
 			end
 		end
 	end
@@ -1377,6 +1380,8 @@ end
 
 -- Initialise the module.
 function AJM:OnInitialize()
+	-- Table to Store IsboxerTeamList
+	AJM.IsboxerSyncList = {}
 	-- Create the settings control.
 	SettingsCreate()
 	-- Initialise the JambaModule part of this module.
@@ -1409,7 +1414,6 @@ function AJM:OnInitialize()
 	local k = GetRealmName()
 	-- remove space for server name if there is one.
 	local realmName = k:gsub( "%s+", "")
-	AJM.IsboxerSyncList = {}
 	--Sets The class of the char.
 --	setClass()
 	-- Click the first row in the team list table to populate the tag list table.
@@ -1508,11 +1512,16 @@ function AJM:JambaOnSettingsReceived( characterName, settings )
 	end
 end
 
-function AJM:PLAYER_ENTERING_WORLD()
+function AJM:PLAYER_ENTERING_WORLD(event, ...)
 	-- trying this
 	-- Click the first row in the team list table to populate the tag list table.
+	local initialLogin, reloadingUI = ...
 	AJM:SettingsTeamListRowClick( 1, 1 )
-	AJM:IsboxerSyncTeamList()
+	if initialLogin then
+		--AJM:Print("test")
+		--AJM:IsboxerSyncTeamList()
+		AJM:ScheduleTimer( "IsboxerSyncTeamList", 0.5 )
+	end	
 end
 
 -------------------------------------------------------------------------------------------------------------
@@ -1906,7 +1915,6 @@ JambaPrivate.Team.RemoveAllMembersFromTeam = RemoveAllMembersFromTeam
 JambaPrivate.Team.setOffline = setOffline
 JambaPrivate.Team.setOnline = setOline
 JambaPrivate.Team.RefreshGroupList = RefreshGroupList
-
 
 -- Functions available for other addons.
 JambaApi.MESSAGE_TEAM_MASTER_CHANGED = AJM.MESSAGE_TEAM_MASTER_CHANGED
