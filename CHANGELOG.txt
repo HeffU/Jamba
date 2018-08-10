@@ -7,6 +7,17 @@ Game Version: 8.0.1
 Release Date: 10/8/2018
 
 ## Jamba-Team 
+	-- Add Raid/Party Should Now Work Again!
+
+
+
+---------------------------
+
+Jamba Version: v8.0.1-Release(0078)
+Game Version: 8.0.1
+Release Date: 10/8/2018
+
+## Jamba-Team 
 	-- IsboxerSync
 		- Removed,
 	-- Isboxer Auto Add Isboxer Team List.

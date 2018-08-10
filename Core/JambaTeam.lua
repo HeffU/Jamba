@@ -815,22 +815,25 @@ end
 
 -- Add all party/raid members to the member list. does not worl cross rwalm todo
 function AJM:AddPartyMembers()
-	local numberPartyMembers = GetNumGroupMembers()
-	for iteratePartyMembers = numberPartyMembers, 1, -1 do
+	 for iteratePartyMembers = 1, GetNumGroupMembers() do	
 		--AJM:Print("party/raid", numberPartyMembers, iteratePartyMembers)
 		local inRaid = IsInRaid()
 		if inRaid == true then
 			local partyMemberName, partyMemberRealm = UnitName( "raid"..iteratePartyMembers )
 			local character = JambaUtilities:AddRealmToNameIfNotNil( partyMemberName, partyMemberRealm )
-			if IsCharacterInTeam( character ) == false then
-				AddMember( character )
+			if partyMemberName ~= nil then
+				if IsCharacterInTeam( character ) == false then
+					AddMember( character )
+				end	
 			end	
 		else
 			local partyMemberName, partyMemberRealm = UnitName( "party"..iteratePartyMembers )
 			local character = JambaUtilities:AddRealmToNameIfNotNil( partyMemberName, partyMemberRealm )
-			if IsCharacterInTeam( character ) == false then
-				AddMember( character )
-			end
+			if partyMemberName ~= nil then
+				if IsCharacterInTeam( character ) == false then
+					AddMember( character )
+				end
+			end	
 		end
 	end
 end
@@ -1055,6 +1058,12 @@ function AJM:IsboxerSyncTeamList()
 	if AJM.db.isboxerSync == true and IsAddOnLoaded("Isboxer" ) == true then
 		for characterName, teamStatus in pairs( AJM.IsboxerSyncList ) do
 			--AJM:Print("syncList", characterName, teamStatus )
+			--[[if teamStatus == "remove" then 
+				if IsCharacterInTeam( characterName ) == true and (characterName ~= AJM.characterName ) then	
+					--AJM:Print("memberNoLongerInIsboxerTeamDelete", characterName, teamStatus )
+					RemoveMember( characterName )
+				end	
+			else]]
 			if teamStatus == "add" and characterName ~= AJM.characterName then
 				if IsCharacterInTeam( characterName ) == false then
 					--AJM:Print("Isboxer-AddMember", characterName, teamStatus )
