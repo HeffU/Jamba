@@ -56,9 +56,7 @@ AJM.settings = {
 		inviteDeclineStrangers = false,
 		inviteConvertToRaid = true,
 		inviteSetAllAssistant = false,
-
 		masterChangeClickToMove = false,
-		testHaveRun = false, 
 	},
 }
 
@@ -409,9 +407,9 @@ local function SettingsCreateTeamList()
 		checkBoxWidth, 
 		lefticon, 
 		bottomOfList - 11,
-		L["CHECKBOX_ISBOXER_SYNC"],
+		L["CHECKBOX_ISBOXER_ADD"],
 		AJM.SettingsSyncIsboxerToggle,
-		L["CHECKBOX_ISBOXER_SYNC_HELP"]
+		L["CHECKBOX_ISBOXER_ADD_HELP"]
 	)	
 	
 	return bottomOfSection
@@ -1002,7 +1000,7 @@ function AJM:RemoveMemberCommand( info, parameters )
 	local characterName = JambaUtilities:Capitalise(parameters)
 	-- Jamba-EE we No-longer remove character's from a team list when isboxer set's up the team we sync!
 	if info == nil then
-		AJM.IsboxerSyncList[characterName] = "remove"
+		--AJM.IsboxerSyncList[characterName] = "remove"
 		return
 	end		
 	--AJM:Print("testremove", info, parameters )
@@ -1055,22 +1053,9 @@ end
 
 function AJM:IsboxerSyncTeamList()
 	if AJM.db.isboxerSync == true and IsAddOnLoaded("Isboxer" ) == true then
-		local JambaVersion = GetAddOnMetadata("JAMBA", "version")
-		if JambaVersion == "v8.0.1-Relese(0077)" then
-			if AJM.db.testHaveRun == false then
-				AJM:Print("Team List Cleared To Fix Jamba Bug #13")
-				JambaUtilities:ClearTable( AJM.db.newTeamList )
-				AJM.db.testHaveRun = true
-			end	
-		end
 		for characterName, teamStatus in pairs( AJM.IsboxerSyncList ) do
 			--AJM:Print("syncList", characterName, teamStatus )
-			if teamStatus == "remove" then 
-				if IsCharacterInTeam( characterName ) == true and (characterName ~= AJM.characterName ) then	
-					--AJM:Print("memberNoLongerInIsboxerTeamDelete", characterName, teamStatus )
-					RemoveMember( characterName )
-				end	
-			elseif teamStatus == "add" and characterName ~= AJM.characterName then
+			if teamStatus == "add" and characterName ~= AJM.characterName then
 				if IsCharacterInTeam( characterName ) == false then
 					--AJM:Print("Isboxer-AddMember", characterName, teamStatus )
 					AddMember( characterName )

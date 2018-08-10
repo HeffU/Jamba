@@ -2,6 +2,21 @@
 ChangeLogs:
 ---------------------------
 
+Jamba Version: v8.0.1-Release(0078)
+Game Version: 8.0.1
+Release Date: 10/8/2018
+
+## Jamba-Team 
+	-- IsboxerSync
+		- Removed,
+	-- Isboxer Auto Add Isboxer Team List.
+		- All this does is Adds New Team Members.
+		- Developer Note: Sync does not work don't seem right for to many.
+		- Isboxer Can Nolonger Remove Team Members Not In The Team List!
+
+
+---------------------------
+
 Jamba Version: v8.0.1-Release(0077)
 Game Version: 8.0.1
 Release Date: 09/8/2018
@@ -10,6 +25,7 @@ Release Date: 09/8/2018
 	-- IsboxerSync 
 		- Fixed a bug in (Isboxer Sync) That was Removing Team Members "Randomly" 
 		- Developer Note: Am so sorry for the players i did not say was a jamba problem (it kinda was not) as this was a tricky bug to track down! -jen
+		- Sync team Only works on the 1st login.
 	--Naming
 		-Add @Target/@Mouseover Are Now Working Again *BUT WITHOUT "@"
 		-Using Target Or Mouseover Will Add Your Current Target Again
